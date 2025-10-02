@@ -1,0 +1,23 @@
+{
+  "name": "generatore-fatture-sanitarie",
+  "version": "2.1.0",
+  "description": "Sistema per la generazione automatica di fatture sanitarie con OAuth scope corretti",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server . -p 8888",
+    "build": "echo 'Static site - no build required'"
+  },
+  "keywords": [
+    "fatture",
+    "sanitarie", 
+    "fattureincloud",
+    "netlify",
+    "oauth",
+    "security"
+  ],
+  "author": "Centro Medico",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.0"
+  }
+}

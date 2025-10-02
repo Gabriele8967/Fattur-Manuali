@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informativa Privacy - Generatore Fatture Sanitarie</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .privacy-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            line-height: 1.6;
+        }
+        .privacy-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .privacy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .privacy-table th,
+        .privacy-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .privacy-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .highlight-box {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border: 1px solid #b6d7ff;
+        }
+        .warning-box {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border: 1px solid #ffeaa7;
+        }
+        .rights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .right-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e1e5e9;
+        }
+        .update-date {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="privacy-container">
+        <header>
+            <h1>Informativa Privacy</h1>
+            <p><strong>Generatore Fatture Sanitarie</strong></p>
+            <p>In conformità al Regolamento UE 2016/679 (GDPR) e al D.Lgs. 196/2003 (Codice Privacy)</p>
+        </header>
+
+        <div class="highlight-box">
+            <h3>📋 Informazioni Essenziali</h3>
+            <p>Questa informativa descrive come trattiamo i tuoi dati personali nel sistema di generazione fatture sanitarie. I tuoi dati sono protetti con crittografia e conservati secondo le normative italiane ed europee.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>1. Titolare del Trattamento</h2>
+            <p><strong>Il titolare del trattamento è configurabile per ogni installazione del sistema.</strong></p>
+            <p>I dati del titolare vengono impostati durante la configurazione iniziale e includono:</p>
+            <ul>
+                <li>Nome/Ragione sociale dello studio medico o centro sanitario</li>
+                <li>Indirizzo completo della struttura</li>
+                <li>Email di contatto per l'esercizio dei diritti</li>
+                <li>Eventuale rappresentante per la protezione dei dati (DPO)</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>2. Dati Personali Trattati</h2>
+            <table class="privacy-table">
+                <thead>
+                    <tr>
+                        <th>Categoria di Dati</th>
+                        <th>Tipologia</th>
+                        <th>Finalità</th>
+                        <th>Base Giuridica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Dati Anagrafici</strong></td>
+                        <td>Nome, cognome, indirizzo</td>
+                        <td>Fatturazione, identificazione paziente</td>
+                        <td>Art. 6.1.c GDPR (obblighi fiscali)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dati Fiscali</strong></td>
+                        <td>Codice fiscale, P.IVA</td>
+                        <td>Adempimenti fiscali obbligatori</td>
+                        <td>Art. 6.1.c GDPR (obblighi di legge)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dati di Contatto</strong></td>
+                        <td>Email, telefono</td>
+                        <td>Comunicazioni relative al servizio</td>
+                        <td>Art. 6.1.a GDPR (consenso)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dati Sanitari</strong></td>
+                        <td>Descrizione prestazione sanitaria</td>
+                        <td>Fatturazione prestazioni sanitarie</td>
+                        <td>Art. 9.2.h GDPR (finalità sanitarie)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dati Tecnici</strong></td>
+                        <td>IP, browser, timestamp</td>
+                        <td>Sicurezza e audit log</td>
+                        <td>Art. 6.1.f GDPR (legittimo interesse)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="privacy-section">
+            <h2>3. Finalità del Trattamento</h2>
+            <div class="rights-grid">
+                <div class="right-item">
+                    <h3>🏥 Sanitarie</h3>
+                    <ul>
+                        <li>Generazione fatture per prestazioni sanitarie</li>
+                        <li>Conservazione documentazione sanitaria</li>
+                        <li>Gestione rapporto paziente-struttura</li>
+                    </ul>
+                </div>
+                <div class="right-item">
+                    <h3>💰 Fiscali</h3>
+                    <ul>
+                        <li>Emissione fatture elettroniche</li>
+                        <li>Conservazione documentazione fiscale</li>
+                        <li>Adempimenti verso l'Agenzia delle Entrate</li>
+                    </ul>
+                </div>
+                <div class="right-item">
+                    <h3>📧 Comunicazioni</h3>
+                    <ul>
+                        <li>Invio informative privacy</li>
+                        <li>Notifiche relative alle fatture</li>
+                        <li>Comunicazioni amministrative</li>
+                    </ul>
+                </div>
+                <div class="right-item">
+                    <h3>🔒 Sicurezza</h3>
+                    <ul>
+                        <li>Prevenzione accessi non autorizzati</li>
+                        <li>Audit log per compliance</li>
+                        <li>Backup di sicurezza</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>4. Base Giuridica del Trattamento</h2>
+            <div class="highlight-box">
+                <h3>Conformità Normativa Completa</h3>
+                <ul>
+                    <li><strong>Art. 6.1.a GDPR</strong>: Consenso dell'interessato per comunicazioni e funzionalità opzionali</li>
+                    <li><strong>Art. 6.1.c GDPR</strong>: Obblighi di legge (fiscali, sanitari, contabili)</li>
+                    <li><strong>Art. 6.1.f GDPR</strong>: Legittimo interesse per sicurezza e gestione amministrativa</li>
+                    <li><strong>Art. 9.2.h GDPR</strong>: Finalità di medicina preventiva e assistenza sanitaria</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>5. Modalità di Trattamento</h2>
+            <table class="privacy-table">
+                <thead>
+                    <tr>
+                        <th>Aspetto</th>
+                        <th>Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Strumenti</strong></td>
+                        <td>Sistemi informatici, software di fatturazione, crittografia AES-256</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modalità</strong></td>
+                        <td>Trattamento automatizzato con misure di sicurezza adeguate</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accesso</strong></td>
+                        <td>Solo personale autorizzato per finalità specifiche</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sicurezza</strong></td>
+                        <td>Crittografia dati, audit log, backup sicuri, controllo accessi</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="privacy-section">
+            <h2>6. Tempi di Conservazione</h2>
+            <div class="warning-box">
+                <h3>⏰ Periodi di Conservazione Legali</h3>
+                <table class="privacy-table">
+                    <thead>
+                        <tr>
+                            <th>Tipologia Dati</th>
+                            <th>Periodo</th>
+                            <th>Base Normativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Documenti fiscali e fatture</td>
+                            <td><strong>10 anni</strong></td>
+                            <td>DPR 600/73, D.Lgs. 82/2005</td>
+                        </tr>
+                        <tr>
+                            <td>Documentazione sanitaria</td>
+                            <td><strong>10 anni</strong></td>
+                            <td>D.Lgs. 196/2003, norme deontologiche</td>
+                        </tr>
+                        <tr>
+                            <td>Consensi al trattamento</td>
+                            <td><strong>Fino a revoca</strong></td>
+                            <td>GDPR Art. 7</td>
+                        </tr>
+                        <tr>
+                            <td>Audit log e sicurezza</td>
+                            <td><strong>5 anni</strong></td>
+                            <td>Provvedimento Garante 229/2014</td>
+                        </tr>
+                        <tr>
+                            <td>Dati di contatto opzionali</td>
+                            <td><strong>5 anni</strong> dall'ultima interazione</td>
+                            <td>Principio di minimizzazione GDPR</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>7. I Tuoi Diritti (Art. 15-22 GDPR)</h2>
+            <div class="rights-grid">
+                <div class="right-item">
+                    <h3>🔍 Accesso</h3>
+                    <p>Diritto di conoscere quali dati abbiamo, come li usiamo e per quanto tempo li conserviamo.</p>
+                </div>
+                <div class="right-item">
+                    <h3>✏️ Rettifica</h3>
+                    <p>Diritto di correggere dati inesatti o di completare dati incompleti.</p>
+                </div>
+                <div class="right-item">
+                    <h3>🗑️ Cancellazione</h3>
+                    <p>Diritto all'oblio nei casi previsti dalla legge (compatibilmente con obblighi fiscali/sanitari).</p>
+                </div>
+                <div class="right-item">
+                    <h3>⏸️ Limitazione</h3>
+                    <p>Diritto di limitare il trattamento in caso di contestazione o opposizione.</p>
+                </div>
+                <div class="right-item">
+                    <h3>📦 Portabilità</h3>
+                    <p>Diritto di ricevere i tuoi dati in formato strutturato e leggibile.</p>
+                </div>
+                <div class="right-item">
+                    <h3>🚫 Opposizione</h3>
+                    <p>Diritto di opporti al trattamento per finalità non obbligatorie.</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h3>Come Esercitare i Tuoi Diritti</h3>
+                <p><strong>Contatta il titolare del trattamento</strong> (configurabile per ogni installazione) tramite:</p>
+                <ul>
+                    <li>Email specificata nella configurazione del sistema</li>
+                    <li>Richiesta scritta all'indirizzo della struttura sanitaria</li>
+                </ul>
+                <p><strong>Tempi di risposta:</strong> Entro 30 giorni dalla richiesta (estendibili a 60 per richieste complesse)</p>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>8. Comunicazione e Diffusione</h2>
+            <table class="privacy-table">
+                <thead>
+                    <tr>
+                        <th>Destinatari</th>
+                        <th>Tipologia Dati</th>
+                        <th>Finalità</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Agenzia delle Entrate</strong></td>
+                        <td>Dati fiscali e fatture</td>
+                        <td>Adempimenti fiscali obbligatori</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sistema Tessera Sanitaria</strong></td>
+                        <td>Dati sanitari per detraibilità</td>
+                        <td>Agevolazioni fiscali sanitarie</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TeamSystem/Fatture in Cloud</strong></td>
+                        <td>Dati necessari per fatturazione</td>
+                        <td>Servizio di fatturazione elettronica</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fornitori servizi IT</strong></td>
+                        <td>Dati tecnici (con pseudonimizzazione)</td>
+                        <td>Manutenzione e supporto tecnico</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="warning-box">
+                <p><strong>⚠️ Importante:</strong> I dati non vengono mai diffusi pubblicamente o venduti a terzi per finalità commerciali.</p>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>9. Trasferimenti Internazionali</h2>
+            <p>I dati possono essere trasferiti verso:</p>
+            <ul>
+                <li><strong>Paesi UE/SEE:</strong> TeamSystem S.p.A. (Italia) per servizi di fatturazione</li>
+                <li><strong>Paesi terzi:</strong> Solo con adeguate garanzie (decisioni di adeguatezza UE, clausole contrattuali standard)</li>
+            </ul>
+            <div class="highlight-box">
+                <p><strong>Garanzie per i trasferimenti:</strong> Tutti i fornitori di servizi cloud rispettano le Standard Contractual Clauses (SCC) approvate dalla Commissione Europea.</p>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>10. Sicurezza dei Dati</h2>
+            <div class="rights-grid">
+                <div class="right-item">
+                    <h3>🔒 Crittografia</h3>
+                    <ul>
+                        <li>AES-256 per dati sensibili</li>
+                        <li>HTTPS per trasmissioni</li>
+                        <li>Hash SHA-256 per password</li>
+                    </ul>
+                </div>
+                <div class="right-item">
+                    <h3>🛡️ Controlli Accesso</h3>
+                    <ul>
+                        <li>Autenticazione forte</li>
+                        <li>Autorizzazioni granulari</li>
+                        <li>Audit log completi</li>
+                    </ul>
+                </div>
+                <div class="right-item">
+                    <h3>💾 Backup e Recovery</h3>
+                    <ul>
+                        <li>Backup crittografati automatici</li>
+                        <li>Piani di disaster recovery</li>
+                        <li>Test periodici di ripristino</li>
+                    </ul>
+                </div>
+                <div class="right-item">
+                    <h3>📊 Monitoraggio</h3>
+                    <ul>
+                        <li>Rilevamento intrusioni</li>
+                        <li>Monitoraggio anomalie</li>
+                        <li>Notifiche di sicurezza</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>11. Cookies e Tecnologie Similari</h2>
+            <table class="privacy-table">
+                <thead>
+                    <tr>
+                        <th>Tipo Cookie</th>
+                        <th>Finalità</th>
+                        <th>Durata</th>
+                        <th>Base Giuridica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tecnici Necessari</strong></td>
+                        <td>Funzionamento del sistema</td>
+                        <td>Sessione</td>
+                        <td>Legittimo interesse</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Configurazione</strong></td>
+                        <td>Salvataggio preferenze utente</td>
+                        <td>1 anno</td>
+                        <td>Legittimo interesse</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sicurezza</strong></td>
+                        <td>Prevenzione frodi e abusi</td>
+                        <td>30 giorni</td>
+                        <td>Legittimo interesse</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="highlight-box">
+                <p><strong>🍪 Gestione Cookie:</strong> Il sistema non utilizza cookie di profilazione o analytics. Solo localStorage per dati tecnici necessari al funzionamento.</p>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>12. Data Protection Officer (DPO)</h2>
+            <p>Per strutture sanitarie che trattano dati su larga scala, è possibile nominare un Data Protection Officer (DPO):</p>
+            <ul>
+                <li><strong>Ruolo:</strong> Supervisione conformità GDPR</li>
+                <li><strong>Contatto:</strong> Configurabile per ogni installazione</li>
+                <li><strong>Obbligatorietà:</strong> Valutare caso per caso secondo Art. 37 GDPR</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>13. Reclami e Autorità di Controllo</h2>
+            <div class="warning-box">
+                <h3>🏛️ Diritto di Reclamo</h3>
+                <p>Hai diritto di presentare reclamo presso:</p>
+                <ul>
+                    <li><strong>Garante per la Protezione dei Dati Personali</strong></li>
+                    <li>Piazza Venezia, 11 - 00187 Roma</li>
+                    <li>Email: garante@gpdp.it</li>
+                    <li>Tel: 06.69677.1</li>
+                    <li>Sito web: <a href="https://www.garanteprivacy.it" target="_blank">www.garanteprivacy.it</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2>14. Modifiche alla Privacy Policy</h2>
+            <p>Questa informativa può essere aggiornata per:</p>
+            <ul>
+                <li>Modifiche normative</li>
+                <li>Evoluzioni tecnologiche</li>
+                <li>Miglioramenti del servizio</li>
+            </ul>
+            <p><strong>Notifiche:</strong> Le modifiche sostanziali saranno comunicate via email (se il consenso è stato prestato) o tramite avviso sul sistema.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>15. Informazioni di Contatto</h2>
+            <div class="highlight-box">
+                <p><strong>📞 Per Informazioni e Richieste:</strong></p>
+                <ul>
+                    <li><strong>Titolare:</strong> [Configurabile per ogni installazione]</li>
+                    <li><strong>Email:</strong> [Configurabile per ogni installazione]</li>
+                    <li><strong>Indirizzo:</strong> [Configurabile per ogni installazione]</li>
+                </ul>
+                <p><strong>Per esercitare i tuoi diritti:</strong> Invia richiesta scritta con documento di identità allegato.</p>
+            </div>
+        </div>
+
+        <div class="update-date">
+            <p><strong>Informativa aggiornata il:</strong> <span id="updateDate">09 Gennaio 2025</span></p>
+            <p><strong>Versione:</strong> 1.0</p>
+        </div>
+
+        <div class="form-actions">
+            <a href="/" class="btn btn-primary">Torna al Sistema</a>
+            <button onclick="window.print()" class="btn btn-secondary">Stampa Informativa</button>
+        </div>
+    </div>
+
+    <script>
+        // Update date automatically
+        document.getElementById('updateDate').textContent = new Date().toLocaleDateString('it-IT');
+    </script>
+</body>
+</html>

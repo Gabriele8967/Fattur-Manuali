@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consenso GDPR - Generatore Fatture Sanitarie</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .consent-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .consent-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .consent-checkbox {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e1e5e9;
+        }
+        .consent-checkbox.required {
+            border-color: #ffc107;
+            background: #fffbf0;
+        }
+        .consent-checkbox input[type="checkbox"] {
+            margin-right: 15px;
+            margin-top: 5px;
+            transform: scale(1.2);
+        }
+        .consent-text {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .required-label {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .data-retention {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .rights-section {
+            background: #f0f8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="consent-container">
+        <header>
+            <h1>Informativa Privacy e Consenso al Trattamento Dati</h1>
+            <p>In conformità al Regolamento UE 2016/679 (GDPR)</p>
+        </header>
+
+        <form id="gdprForm" class="gdpr-form">
+            <div class="consent-section">
+                <h2>Configurazione Sistema</h2>
+                <div class="form-group">
+                    <label for="companyName">Nome Azienda/Studio Medico *</label>
+                    <input type="text" id="companyName" name="companyName" required placeholder="Es. Studio Medico Dr. Rossi">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="senderEmail">Email Aziendale *</label>
+                        <input type="email" id="senderEmail" name="senderEmail" required placeholder="info@studiomedico.it">
+                    </div>
+                    <div class="form-group">
+                        <label for="senderName">Nome Responsabile</label>
+                        <input type="text" id="senderName" name="senderName" placeholder="Dr. Mario Rossi">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="companyAddress">Indirizzo Completo *</label>
+                    <textarea id="companyAddress" name="companyAddress" required placeholder="Via Roma 123, 00100 Roma (RM)"></textarea>
+                </div>
+            </div>
+
+            <div class="consent-section">
+                <h2>Informazioni sul Trattamento</h2>
+                <div class="data-retention">
+                    <h3>Finalità del Trattamento:</h3>
+                    <ul>
+                        <li>Generazione e gestione fatture per prestazioni sanitarie</li>
+                        <li>Invio comunicazioni relative alla fatturazione</li>
+                        <li>Adempimenti fiscali e contabili obbligatori per legge</li>
+                        <li>Conservazione documentazione sanitaria</li>
+                    </ul>
+                </div>
+
+                <div class="data-retention">
+                    <h3>Base Giuridica:</h3>
+                    <ul>
+                        <li><strong>Art. 6.1.a GDPR</strong>: Consenso per invio comunicazioni</li>
+                        <li><strong>Art. 6.1.c GDPR</strong>: Obblighi di legge fiscali</li>
+                        <li><strong>Art. 6.1.f GDPR</strong>: Legittimo interesse amministrativo</li>
+                        <li><strong>Art. 9.2.h GDPR</strong>: Finalità di medicina preventiva (prestazioni sanitarie)</li>
+                    </ul>
+                </div>
+
+                <div class="data-retention">
+                    <h3>Tempi di Conservazione:</h3>
+                    <ul>
+                        <li>Documenti fiscali: <strong>10 anni</strong> (obbligatorio per legge)</li>
+                        <li>Documenti sanitari: <strong>10 anni</strong> (normativa sanitaria)</li>
+                        <li>Consensi marketing: <strong>fino a revoca</strong></li>
+                        <li>Dati di contatto: <strong>5 anni dall'ultima interazione</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="rights-section">
+                <h2>I Suoi Diritti (Art. 15-22 GDPR)</h2>
+                <p>Lei ha diritto di:</p>
+                <ul>
+                    <li><strong>Accesso</strong> ai Suoi dati personali</li>
+                    <li><strong>Rettifica</strong> di dati inesatti o incompleti</li>
+                    <li><strong>Cancellazione</strong> ("diritto all'oblio") nei casi previsti</li>
+                    <li><strong>Limitazione</strong> del trattamento</li>
+                    <li><strong>Portabilità</strong> dei dati in formato strutturato</li>
+                    <li><strong>Opposizione</strong> al trattamento</li>
+                    <li><strong>Reclamo</strong> presso il Garante Privacy</li>
+                </ul>
+                <p><strong>Per esercitare i Suoi diritti, contatti:</strong> <span id="contactEmail">[Email da configurare]</span></p>
+            </div>
+
+            <div class="consent-section">
+                <h2>Consensi Richiesti</h2>
+                
+                <div class="consent-checkbox required">
+                    <input type="checkbox" id="consent1" name="consent1" required>
+                    <div class="consent-text">
+                        <strong>Consenso obbligatorio:</strong> Accetto il trattamento dei miei dati personali per la generazione di fatture e l'adempimento degli obblighi fiscali e sanitari di legge.
+                        <span class="required-label">* OBBLIGATORIO</span>
+                    </div>
+                </div>
+
+                <div class="consent-checkbox">
+                    <input type="checkbox" id="consent2" name="consent2">
+                    <div class="consent-text">
+                        <strong>Consenso comunicazioni:</strong> Accetto di ricevere via email l'informativa privacy e comunicazioni relative alle fatture generate.
+                        <small style="display: block; color: #666; margin-top: 5px;">
+                            Questo consenso è facoltativo. Senza di esso non riceverà notifiche email.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="consent-checkbox">
+                    <input type="checkbox" id="consent3" name="consent3">
+                    <div class="consent-text">
+                        <strong>Consenso conservazione prolungata:</strong> Accetto che i miei dati di contatto siano conservati oltre il periodo minimo di legge per facilitare future interazioni.
+                        <small style="display: block; color: #666; margin-top: 5px;">
+                            Senza questo consenso, i dati saranno cancellati non appena possibile per legge.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consent-section">
+                <h2>Informazioni Tecniche</h2>
+                <p><strong>Cookies:</strong> Il sistema utilizza solo cookies tecnici necessari (localStorage) per il funzionamento. Non vengono utilizzati cookies di profilazione.</p>
+                <p><strong>Sicurezza:</strong> I dati sono protetti con crittografia HTTPS e non vengono mai salvati permanentemente sui server.</p>
+                <p><strong>Trasferimenti:</strong> I dati vengono inviati alle API di Fatture in Cloud (TeamSystem S.p.A.) per la generazione delle fatture.</p>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" onclick="window.history.back()" class="btn btn-secondary">Indietro</button>
+                <button type="submit" class="btn btn-primary">Accetta e Continua</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        class GDPRConsent {
+            constructor() {
+                this.initializeForm();
+                this.loadSavedData();
+            }
+
+            initializeForm() {
+                document.getElementById('gdprForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleConsent();
+                });
+
+                // Update contact email display
+                document.getElementById('senderEmail').addEventListener('input', (e) => {
+                    document.getElementById('contactEmail').textContent = e.target.value || '[Email da configurare]';
+                });
+            }
+
+            loadSavedData() {
+                // Load previously saved company data
+                const savedData = localStorage.getItem('company_config');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    Object.keys(data).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) element.value = data[key];
+                    });
+                    document.getElementById('contactEmail').textContent = data.senderEmail || '[Email da configurare]';
+                }
+            }
+
+            handleConsent() {
+                const formData = new FormData(document.getElementById('gdprForm'));
+                const data = {};
+                
+                // Get form values
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+
+                // Validate required consents
+                if (!data.consent1) {
+                    alert('Il consenso per il trattamento dei dati è obbligatorio per utilizzare il sistema.');
+                    return;
+                }
+
+                // Validate required fields
+                if (!data.companyName || !data.senderEmail || !data.companyAddress) {
+                    alert('Compila tutti i campi obbligatori della configurazione aziendale.');
+                    return;
+                }
+
+                // Save company configuration
+                const companyConfig = {
+                    companyName: data.companyName,
+                    senderEmail: data.senderEmail,
+                    senderName: data.senderName,
+                    companyAddress: data.companyAddress
+                };
+                localStorage.setItem('company_config', JSON.stringify(companyConfig));
+
+                // Save consent data with timestamp
+                const consentData = {
+                    consent1: !!data.consent1,
+                    consent2: !!data.consent2,
+                    consent3: !!data.consent3,
+                    timestamp: new Date().toISOString(),
+                    ip: 'client-side', // Will be logged server-side
+                    version: '1.0'
+                };
+                localStorage.setItem('gdpr_consent', JSON.stringify(consentData));
+
+                // Create audit log entry
+                this.logConsentEvent('consent_given', consentData);
+
+                alert('Configurazione salvata correttamente! Ora puoi utilizzare il sistema.');
+                window.location.href = '/';
+            }
+
+            logConsentEvent(action, data) {
+                // Create audit log (this would be sent to server in production)
+                const auditEntry = {
+                    timestamp: new Date().toISOString(),
+                    action: action,
+                    data: data,
+                    userAgent: navigator.userAgent,
+                    sessionId: this.generateSessionId()
+                };
+                
+                const auditLog = JSON.parse(localStorage.getItem('audit_log') || '[]');
+                auditLog.push(auditEntry);
+                localStorage.setItem('audit_log', JSON.stringify(auditLog.slice(-100))); // Keep last 100 entries
+            }
+
+            generateSessionId() {
+                return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+        }
+
+        // Initialize GDPR consent system
+        new GDPRConsent();
+    </script>
+</body>
+</html>

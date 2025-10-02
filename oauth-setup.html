@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurazione OAuth - Fatture in Cloud</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Configurazione Fatture in Cloud</h1>
+            <p>Configura l'integrazione con le API di Fatture in Cloud</p>
+        </header>
+
+        <div class="section">
+            <h2>🚀 Configurazione Automatica v2.1</h2>
+            <div class="highlight-box">
+                <p><strong>✅ Sistema aggiornato con scope OAuth corretti!</strong></p>
+                <p>Clicca il pulsante sotto per autorizzare l'accesso alle API di Fatture in Cloud.</p>
+            </div>
+
+            <div class="form-actions">
+                <button onclick="startOAuthFlow()" class="btn btn-primary">🔐 Autorizza Sistema</button>
+                <button onclick="useManualToken()" class="btn btn-secondary">📝 Token Manuale</button>
+            </div>
+        </div>
+
+        <div class="section" style="background: #f0f8f0; border-left: 4px solid #4caf50;">
+            <h3>📋 Configurazione Aggiornata</h3>
+            <ul>
+                <li><strong>Client ID:</strong> Caricato dalle variabili d'ambiente</li>
+                <li><strong>Company ID:</strong> Configurato automaticamente</li>
+                <li><strong>Redirect URL:</strong> Configurato dinamicamente</li>
+                <li><strong>Scope OAuth:</strong> issued_documents.invoices:a entity.clients:r</li>
+                <li><strong>Permessi:</strong> Creazione fatture + Lettura clienti</li>
+            </ul>
+        </div>
+
+        <div class="section" style="background: #e8f4fd; border-left: 4px solid #2196F3;">
+            <h3>ℹ️ Aggiornamenti v2.1</h3>
+            <ol>
+                <li><strong>Scope OAuth corretti</strong> secondo documentazione ufficiale</li>
+                <li><strong>Permessi minimi</strong> necessari per il funzionamento</li>
+                <li><strong>Sicurezza migliorata</strong> seguendo best practices</li>
+                <li><strong>Compatibilità garantita</strong> con API Fatture in Cloud</li>
+            </ol>
+        </div>
+
+        <div class="section" id="manualTokenSection" style="display: none;">
+            <h2>Configurazione Token Manuale (Alternativa)</h2>
+            <div class="form-group">
+                <label for="accessToken">Access Token</label>
+                <input type="password" id="accessToken" placeholder="Inserisci l'access token manuale">
+                <small>Se preferisci usare un token generato manualmente da Fatture in Cloud</small>
+            </div>
+            <div class="form-actions">
+                <button onclick="saveManualToken()" class="btn btn-primary">Salva Token Manuale</button>
+            </div>
+        </div>
+
+        <div class="section" id="statusSection" style="display: none;">
+            <h2>Stato Connessione</h2>
+            <div id="connectionStatus"></div>
+        </div>
+    </div>
+
+    <script>
+        let oauthConfig = null;
+
+        async function loadOAuthConfig() {
+            try {
+                const response = await fetch('/.netlify/functions/oauth-config');
+                const config = await response.json();
+                
+                if (config.error) {
+                    throw new Error(config.error);
+                }
+                
+                oauthConfig = config;
+                console.log('OAuth config loaded with corrected scope:', config.scope);
+                return config;
+            } catch (error) {
+                console.error('Failed to load OAuth config:', error);
+                showStatus('❌ Errore nel caricamento della configurazione', 'error');
+                throw error;
+            }
+        }
+
+        async function startOAuthFlow() {
+            try {
+                if (!oauthConfig) {
+                    await loadOAuthConfig();
+                }
+
+                const authUrl = await buildOAuthUrl();
+                
+                showStatus('Reindirizzamento a Fatture in Cloud per autorizzazione...', 'info');
+                
+                setTimeout(() => {
+                    window.location.href = authUrl;
+                }, 1500);
+                
+            } catch (error) {
+                console.error('OAuth flow error:', error);
+                showStatus('❌ Errore nell\'avvio OAuth: ' + error.message, 'error');
+            }
+        }
+
+        async function buildOAuthUrl() {
+            const state = generateState();
+            
+            // Build authorization URL with CORRECT scope syntax
+            const params = new URLSearchParams({
+                response_type: 'code',
+                client_id: oauthConfig.clientId,
+                redirect_uri: oauthConfig.redirectUri,
+                state: state,
+                scope: oauthConfig.scope || 'issued_documents.invoices:a entity.clients:r'
+            });
+
+            localStorage.setItem('oauth_state', state);
+            console.log('OAuth parameters:', {
+                clientId: oauthConfig.clientId,
+                redirectUri: oauthConfig.redirectUri,
+                scope: oauthConfig.scope,
+                state: state
+            });
+            
+            const authUrl = `${oauthConfig.authEndpoint}?${params.toString()}`;
+            console.log('Generated OAuth URL:', authUrl);
+            
+            return authUrl;
+        }
+
+        function generateState() {
+            return Math.random().toString(36).substring(2, 15) + 
+                   Math.random().toString(36).substring(2, 15);
+        }
+
+        function useManualToken() {
+            document.getElementById('manualTokenSection').style.display = 'block';
+            document.getElementById('manualTokenSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function saveManualToken() {
+            const accessToken = document.getElementById('accessToken').value;
+            
+            if (!accessToken) {
+                alert('Inserisci l\'access token');
+                return;
+            }
+
+            try {
+                if (!oauthConfig) {
+                    await loadOAuthConfig();
+                }
+
+                const credentials = {
+                    accessToken: accessToken,
+                    companyId: oauthConfig.companyId,
+                    method: 'manual',
+                    timestamp: new Date().toISOString()
+                };
+
+                localStorage.setItem('fic_credentials', JSON.stringify(credentials));
+                
+                showStatus('✅ Token salvato correttamente!', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } catch (error) {
+                showStatus('❌ Errore nel salvataggio: ' + error.message, 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusSection');
+            const contentDiv = document.getElementById('connectionStatus');
+            
+            const className = type === 'success' ? 'success-message' : 
+                             type === 'error' ? 'error-message' : 'info-message';
+            
+            contentDiv.innerHTML = `<div class="${className}"><p>${message}</p></div>`;
+            statusDiv.style.display = 'block';
+            statusDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await loadOAuthConfig();
+                
+                const credentials = localStorage.getItem('fic_credentials');
+                if (credentials) {
+                    showStatus('✅ Credenziali già configurate. <a href="/">Vai al sistema</a>', 'success');
+                }
+            } catch (error) {
+                console.error('Initialization error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

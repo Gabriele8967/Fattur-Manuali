@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticazione - Generatore Fatture</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-callback">
+            <h1>Completamento Autenticazione</h1>
+            <div id="loading" class="loading-message">
+                <p>⏳ Completamento dell'autenticazione in corso...</p>
+            </div>
+            <div id="success" class="success-message" style="display: none;">
+                <h3>✅ Autenticazione completata!</h3>
+                <p>Reindirizzamento alla pagina principale...</p>
+            </div>
+            <div id="error" class="error-message" style="display: none;">
+                <h3>❌ Errore nell'autenticazione</h3>
+                <p id="errorMessage"></p>
+                <a href="/" class="btn btn-primary">Torna alla pagina principale</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class OAuthCallback {
+            constructor() {
+                this.handleCallback();
+            }
+
+            async handleCallback() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                const state = urlParams.get('state');
+                const error = urlParams.get('error');
+                const error_description = urlParams.get('error_description');
+
+                console.log('OAuth callback received:', { 
+                    hasCode: !!code, 
+                    hasState: !!state, 
+                    error: error,
+                    error_description: error_description,
+                    currentUrl: window.location.href
+                });
+
+                if (error) {
+                    const errorMsg = error_description ? `${error}: ${error_description}` : `Errore OAuth: ${error}`;
+                    this.showError(errorMsg);
+                    return;
+                }
+
+                if (!code) {
+                    this.showError('Codice di autorizzazione mancante');
+                    return;
+                }
+
+                try {
+                    await this.exchangeCodeForToken(code, state);
+                    this.showSuccess();
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('OAuth error:', error);
+                    this.showError(`Errore nell'autenticazione: ${error.message}`);
+                }
+            }
+
+            async exchangeCodeForToken(code, state) {
+                try {
+                    console.log('Starting secure token exchange via Netlify Function...');
+                    
+                    // Verify state parameter for security
+                    const storedState = localStorage.getItem('oauth_state');
+                    console.log('State validation:', { received: state, stored: storedState });
+                    
+                    if (storedState && state !== storedState) {
+                        throw new Error('State parameter mismatch - possible CSRF attack');
+                    }
+                    
+                    if (!storedState) {
+                        console.warn('No stored state found - OAuth flow may not have been initiated properly');
+                    }
+
+                    console.log('Exchanging code for token via secure endpoint...');
+
+                    // Exchange authorization code for access token using secure Netlify Function
+                    const tokenResponse = await fetch('/.netlify/functions/oauth-token', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            code: code,
+                            state: state
+                        })
+                    });
+
+                    console.log('Token response status:', tokenResponse.status);
+
+                    if (!tokenResponse.ok) {
+                        const errorData = await tokenResponse.json();
+                        console.error('Token exchange failed:', errorData);
+                        throw new Error(errorData.error || `Token exchange failed: ${tokenResponse.status}`);
+                    }
+
+                    const credentials = await tokenResponse.json();
+                    console.log('Token received successfully');
+                    
+                    // Store credentials
+                    localStorage.setItem('fic_credentials', JSON.stringify(credentials));
+                    
+                    // Clean up OAuth temporary data
+                    localStorage.removeItem('oauth_state');
+                    
+                    console.log('Credentials saved successfully');
+
+                } catch (error) {
+                    console.error('OAuth exchange error:', error);
+                    throw error;
+                }
+            }
+
+            showSuccess() {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('success').style.display = 'block';
+            }
+
+            showError(message) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('errorMessage').innerHTML = message;
+            }
+        }
+
+        // Initialize callback handler
+        new OAuthCallback();
+    </script>
+</body>
+</html>

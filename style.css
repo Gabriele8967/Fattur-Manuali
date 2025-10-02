@@ -1,9 +1,12 @@
-body {
-    background-color: #f0f2f5;
+html, body {
+  height: 100%;
 }
 
-.container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+.bg-body-tertiary {
+    background-color: #f8f9fa !important;
+}
+
+.form-container {
+  max-width: 480px;
+  padding: 1rem;
 }

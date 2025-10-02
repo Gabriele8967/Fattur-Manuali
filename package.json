@@ -17,6 +17,9 @@
   ],
   "author": "Centro Medico",
   "license": "MIT",
+  "dependencies": {
+    "nodemailer": "^6.9.13"
+  },
   "devDependencies": {
     "http-server": "^14.1.0"
   }

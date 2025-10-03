@@ -190,10 +190,14 @@
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 await loadOAuthConfig();
-                
-                const credentials = localStorage.getItem('fic_credentials');
-                if (credentials) {
-                    showStatus('✅ Credenziali già configurate. <a href="/">Vai al sistema</a>', 'success');
+
+                // Clear old localStorage credentials (not used anymore)
+                localStorage.removeItem('fic_credentials');
+
+                // Check if server-side auth is completed
+                const authCompleted = localStorage.getItem('fic_auth_completed');
+                if (authCompleted) {
+                    showStatus('✅ Autenticazione server completata. <a href="/">Vai al sistema</a>', 'success');
                 }
             } catch (error) {
                 console.error('Initialization error:', error);

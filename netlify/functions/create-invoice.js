@@ -52,11 +52,8 @@ async function refreshAccessToken(currentRefreshToken) {
 
     // Salva i nuovi token in Netlify Blobs
     const { getStore } = await import('@netlify/blobs');
-    const store = getStore({
-        name: 'fic-tokens',
-        siteID: process.env.SITE_ID,
-        token: process.env.NETLIFY_API_TOKEN
-    });
+    const store = getStore('fic-tokens');
+
     await store.setJSON('oauth-tokens', {
         accessToken: tokenData.access_token,
         refreshToken: tokenData.refresh_token,
@@ -87,11 +84,7 @@ exports.handler = async (event, context) => {
     try {
         // Get tokens from Netlify Blobs
         const { getStore } = await import('@netlify/blobs');
-        const store = getStore({
-            name: 'fic-tokens',
-            siteID: process.env.SITE_ID || context.site?.id,
-            token: process.env.NETLIFY_API_TOKEN
-        });
+        const store = getStore('fic-tokens');
         const tokens = await store.getJSON('oauth-tokens');
 
         if (!tokens || !tokens.accessToken) {

@@ -1,8 +1,8 @@
 const https = require('https');
 const { URLSearchParams } = require('url');
-const { updateNetlifyEnvVars } = require('./helpers/netlify-api');
+const { getStore } = require('@netlify/blobs');
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
     const headers = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
@@ -64,11 +64,15 @@ exports.handler = async (event) => {
             req.end();
         });
 
-        // 2. Save tokens to Netlify environment variables
-        await updateNetlifyEnvVars({
-            FIC_ACCESS_TOKEN: tokenData.access_token,
-            FIC_REFRESH_TOKEN: tokenData.refresh_token,
+        // 2. Save tokens to Netlify Blobs (persistent server-side storage)
+        const store = getStore('fic-tokens');
+        await store.setJSON('oauth-tokens', {
+            accessToken: tokenData.access_token,
+            refreshToken: tokenData.refresh_token,
+            timestamp: new Date().toISOString()
         });
+
+        console.log('Tokens saved successfully to Netlify Blobs');
 
         // 3. Return success message
         return {

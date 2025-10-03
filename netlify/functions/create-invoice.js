@@ -1,4 +1,5 @@
 const https = require('https');
+const { getStore } = require('@netlify/blobs');
 
 // Funzione per chiamare l'API di Fatture in Cloud
 function callFattureInCloudAPI(options, postData) {
@@ -27,14 +28,13 @@ function callFattureInCloudAPI(options, postData) {
 
 // Funzione per aggiornare il token
 const { URLSearchParams } = require('url');
-const { updateNetlifyEnvVars } = require('./helpers/netlify-api');
 
-async function refreshAccessToken() {
+async function refreshAccessToken(currentRefreshToken) {
     const postData = new URLSearchParams({
         grant_type: 'refresh_token',
         client_id: process.env.FIC_CLIENT_ID,
         client_secret: process.env.FIC_CLIENT_SECRET,
-        refresh_token: process.env.FIC_REFRESH_TOKEN,
+        refresh_token: currentRefreshToken,
     }).toString();
 
     const options = {
@@ -49,27 +49,25 @@ async function refreshAccessToken() {
 
     const tokenData = await callFattureInCloudAPI(options, postData);
 
-    console.log('Tokens refreshed, updating Netlify environment variables...');
+    console.log('Tokens refreshed, saving to Netlify Blobs...');
 
-    // Salva i nuovi token nelle variabili d'ambiente di Netlify
-    await updateNetlifyEnvVars({
-        FIC_ACCESS_TOKEN: tokenData.access_token,
-        FIC_REFRESH_TOKEN: tokenData.refresh_token,
+    // Salva i nuovi token in Netlify Blobs
+    const store = getStore('fic-tokens');
+    await store.setJSON('oauth-tokens', {
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        timestamp: new Date().toISOString()
     });
 
-    // Aggiorna anche per la richiesta corrente
-    process.env.FIC_ACCESS_TOKEN = tokenData.access_token;
-    process.env.FIC_REFRESH_TOKEN = tokenData.refresh_token;
-
-    console.log('Environment variables updated successfully');
+    console.log('Tokens updated successfully in Netlify Blobs');
 
     return tokenData.access_token;
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
     const headers = {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*', // In produzione, restringere a `process.env.URL`
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
     };
@@ -83,6 +81,18 @@ exports.handler = async (event) => {
     }
 
     try {
+        // Get tokens from Netlify Blobs
+        const store = getStore('fic-tokens');
+        const tokens = await store.getJSON('oauth-tokens');
+
+        if (!tokens || !tokens.accessToken) {
+            return {
+                statusCode: 401,
+                headers,
+                body: JSON.stringify({ error: 'OAuth tokens not configured. Please authorize the system first.' }),
+            };
+        }
+
         const data = JSON.parse(event.body);
         const companyId = process.env.FIC_COMPANY_ID;
 
@@ -133,7 +143,7 @@ exports.handler = async (event) => {
 
         try {
             // Prova a creare la fattura con il token attuale
-            const result = await createInvoice(process.env.FIC_ACCESS_TOKEN);
+            const result = await createInvoice(tokens.accessToken);
             return {
                 statusCode: 200,
                 headers,
@@ -143,7 +153,7 @@ exports.handler = async (event) => {
             // Se il token è scaduto (401), aggiornalo e riprova
             if (error.statusCode === 401) {
                 console.log('Access token expired. Refreshing...');
-                const newAccessToken = await refreshAccessToken();
+                const newAccessToken = await refreshAccessToken(tokens.refreshToken);
                 const result = await createInvoice(newAccessToken);
                 return {
                     statusCode: 200,

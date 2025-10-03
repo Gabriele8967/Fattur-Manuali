@@ -65,7 +65,11 @@ exports.handler = async (event, context) => {
 
         // 2. Save tokens to Netlify Blobs (persistent server-side storage)
         const { getStore } = await import('@netlify/blobs');
-        const store = getStore('fic-tokens');
+        const store = getStore({
+            name: 'fic-tokens',
+            siteID: process.env.SITE_ID || context.site?.id,
+            token: process.env.NETLIFY_API_TOKEN
+        });
         await store.setJSON('oauth-tokens', {
             accessToken: tokenData.access_token,
             refreshToken: tokenData.refresh_token,

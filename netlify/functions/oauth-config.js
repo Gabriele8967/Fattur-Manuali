@@ -2,9 +2,9 @@
 exports.handler = async (event, context) => {
     try {
         const requiredEnvVars = [
-            'FATTURE_CLIENT_ID',
-            'FATTURE_COMPANY_ID', 
-            'FATTURE_REDIRECT_URI'
+            'FIC_CLIENT_ID',
+            'FIC_COMPANY_ID', 
+            'FIC_REDIRECT_URI'
         ];
 
         const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);

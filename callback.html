@@ -111,24 +111,16 @@
                         throw new Error(errorData.error || `Token exchange failed: ${tokenResponse.status}`);
                     }
 
-                    const tokenData = await tokenResponse.json();
-                    console.log('Token received successfully');
-
-                    // Store credentials in localStorage
-                    const credentials = {
-                        accessToken: tokenData.accessToken,
-                        refreshToken: tokenData.refreshToken,
-                        companyId: tokenData.companyId,
-                        timestamp: tokenData.timestamp,
-                        method: 'oauth'
-                    };
-
-                    localStorage.setItem('fic_credentials', JSON.stringify(credentials));
+                    const response = await tokenResponse.json();
+                    console.log('Authentication successful:', response.message);
 
                     // Clean up OAuth temporary data
                     localStorage.removeItem('oauth_state');
 
-                    console.log('Credentials saved successfully:', credentials);
+                    // Mark that authentication was completed
+                    localStorage.setItem('fic_auth_completed', new Date().toISOString());
+
+                    console.log('Server-side authentication completed successfully');
 
                 } catch (error) {
                     console.error('OAuth exchange error:', error);

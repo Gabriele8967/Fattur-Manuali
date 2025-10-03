@@ -26,7 +26,8 @@ function callFattureInCloudAPI(options, postData) {
 }
 
 // Funzione per aggiornare il token
-const { refreshAccessToken } = require('./refresh-token');
+const { URLSearchParams } = require('url');
+const { updateNetlifyEnvVars } = require('./helpers/netlify-api');
 
 async function refreshAccessToken() {
     const postData = new URLSearchParams({
@@ -48,16 +49,19 @@ async function refreshAccessToken() {
 
     const tokenData = await callFattureInCloudAPI(options, postData);
 
-    // Qui dovremmo aggiornare le variabili d'ambiente di Netlify
-    // Questa è una operazione complessa che richiede l'API di Netlify.
-    // Per ora, logghiamo i nuovi token. L'implementazione dell'aggiornamento
-    // automatico avverrà in un secondo momento.
-    console.log('New Access Token:', tokenData.access_token);
-    console.log('New Refresh Token:', tokenData.refresh_token);
+    console.log('Tokens refreshed, updating Netlify environment variables...');
 
-    // Aggiorniamo le variabili di ambiente per la richiesta corrente
+    // Salva i nuovi token nelle variabili d'ambiente di Netlify
+    await updateNetlifyEnvVars({
+        FIC_ACCESS_TOKEN: tokenData.access_token,
+        FIC_REFRESH_TOKEN: tokenData.refresh_token,
+    });
+
+    // Aggiorna anche per la richiesta corrente
     process.env.FIC_ACCESS_TOKEN = tokenData.access_token;
     process.env.FIC_REFRESH_TOKEN = tokenData.refresh_token;
+
+    console.log('Environment variables updated successfully');
 
     return tokenData.access_token;
 }

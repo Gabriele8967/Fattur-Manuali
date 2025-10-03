@@ -1,4 +1,5 @@
 const https = require('https');
+const { refreshAccessToken } = require('./refresh-token');
 
 // Funzione per chiamare l'API di Fatture in Cloud
 function callFattureInCloudAPI(options, postData) {
@@ -28,7 +29,7 @@ function callFattureInCloudAPI(options, postData) {
 exports.handler = async (event) => {
     const headers = {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': '*', // In produzione, restringere a `process.env.URL`
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
     };
@@ -42,24 +43,11 @@ exports.handler = async (event) => {
     }
 
     try {
-        // Use permanent API token from environment variables
-        const accessToken = process.env.FIC_ACCESS_TOKEN;
-        const companyId = process.env.FIC_COMPANY_ID;
-
-        if (!accessToken || !companyId) {
-            return {
-                statusCode: 401,
-                headers,
-                body: JSON.stringify({ error: 'API token not configured. Please set FIC_ACCESS_TOKEN environment variable.' }),
-            };
-        }
-
         const data = JSON.parse(event.body);
-
-        // 1. Costruisci i dati della fattura usando la struttura corretta OpenAPI
+        const companyId = process.env.FIC_COMPANY_ID;
         const importo = parseFloat(data.importo);
-        const today = new Date().toISOString().split('T')[0];
 
+        // Costruisci i dati della fattura
         const invoicePayload = {
             data: {
                 type: 'invoice',
@@ -67,53 +55,65 @@ exports.handler = async (event) => {
                     name: `${data.nome} ${data.cognome}`,
                     tax_code: data.codiceFiscale,
                     email: data.email,
-                    country: 'Italia',
+                    country: 'IT',
                 },
-                date: today,
+                date: new Date().toISOString().split('T')[0],
                 items_list: [
                     {
                         name: data.causale,
                         qty: 1,
                         net_price: importo,
-                                                vat: { id: 6, nature: 'N4' }, // ID e Natura per IVA esente (prestazioni sanitarie)                    },
+                        vat: { id: 6, nature: 'N4' }, // ID e Natura per IVA esente
+                    },
                 ],
-                payment_method: {
-                    name: 'Contanti',
-                    default_payment_account: {
-                        name: 'Cassa'
-                    }
-                },
                 payments_list: [
                     {
                         amount: importo,
-                        due_date: today,
-                        status: 'not_paid'
-                    }
-                ]
+                        due_date: new Date().toISOString().split('T')[0],
+                        status: 'paid',
+                    },
+                ],
             },
         };
 
         const postData = JSON.stringify(invoicePayload);
 
-        // Create invoice with permanent token
-        const options = {
-            hostname: 'api-v2.fattureincloud.it',
-            path: `/c/${companyId}/issued_documents`,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Length': postData.length,
-            },
+        const createInvoice = async (token) => {
+            const options = {
+                hostname: 'api-v2.fattureincloud.it',
+                path: `/c/${companyId}/issued_documents`,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Length': postData.length,
+                },
+            };
+            return await callFattureInCloudAPI(options, postData);
         };
 
-        const result = await callFattureInCloudAPI(options, postData);
-
-        return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({ invoiceNumber: result.data.number }),
-        };
+        try {
+            // Prova a creare la fattura con il token attuale
+            const result = await createInvoice(process.env.FIC_ACCESS_TOKEN);
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ invoiceNumber: result.data.number }),
+            };
+        } catch (error) {
+            // Se il token è scaduto (401), aggiornalo e riprova
+            if (error.statusCode === 401) {
+                console.log('Access token expired. Refreshing...');
+                const newAccessToken = await refreshAccessToken();
+                const result = await createInvoice(newAccessToken);
+                return {
+                    statusCode: 200,
+                    headers,
+                    body: JSON.stringify({ invoiceNumber: result.data.number }),
+                };
+            }
+            throw error; // Altri errori
+        }
 
     } catch (error) {
         console.error('Handler error:', error);

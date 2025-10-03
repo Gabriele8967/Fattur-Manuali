@@ -72,14 +72,7 @@ exports.handler = async (event) => {
                         name: data.causale,
                         qty: 1,
                         net_price: data.importo,
-                        vat: { id: 0 }, // Esente IVA, da configurare se necessario
-                    },
-                ],
-                payments_list: [
-                    {
-                        amount: data.importo,
-                        due_date: new Date().toISOString().split('T')[0],
-                        status: 'paid',
+                        vat: { id: 0 }, // Esente IVA
                     },
                 ],
             },

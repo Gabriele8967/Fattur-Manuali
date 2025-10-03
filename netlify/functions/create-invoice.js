@@ -1,5 +1,4 @@
 const https = require('https');
-const { getStore } = require('@netlify/blobs');
 
 // Funzione per chiamare l'API di Fatture in Cloud
 function callFattureInCloudAPI(options, postData) {
@@ -52,6 +51,7 @@ async function refreshAccessToken(currentRefreshToken) {
     console.log('Tokens refreshed, saving to Netlify Blobs...');
 
     // Salva i nuovi token in Netlify Blobs
+    const { getStore } = await import('@netlify/blobs');
     const store = getStore('fic-tokens');
     await store.setJSON('oauth-tokens', {
         accessToken: tokenData.access_token,
@@ -82,6 +82,7 @@ exports.handler = async (event, context) => {
 
     try {
         // Get tokens from Netlify Blobs
+        const { getStore } = await import('@netlify/blobs');
         const store = getStore('fic-tokens');
         const tokens = await store.getJSON('oauth-tokens');
 

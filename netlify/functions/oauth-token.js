@@ -1,6 +1,5 @@
 const https = require('https');
 const { URLSearchParams } = require('url');
-const { getStore } = require('@netlify/blobs');
 
 exports.handler = async (event, context) => {
     const headers = {
@@ -65,6 +64,7 @@ exports.handler = async (event, context) => {
         });
 
         // 2. Save tokens to Netlify Blobs (persistent server-side storage)
+        const { getStore } = await import('@netlify/blobs');
         const store = getStore('fic-tokens');
         await store.setJSON('oauth-tokens', {
             accessToken: tokenData.access_token,

@@ -57,6 +57,9 @@ exports.handler = async (event) => {
         const data = JSON.parse(event.body);
 
         // 1. Costruisci i dati della fattura usando la struttura corretta OpenAPI
+        const importo = parseFloat(data.importo);
+        const today = new Date().toISOString().split('T')[0];
+
         const invoicePayload = {
             data: {
                 type: 'invoice',
@@ -66,12 +69,12 @@ exports.handler = async (event) => {
                     email: data.email,
                     country: 'Italia',
                 },
-                date: new Date().toISOString().split('T')[0],
+                date: today,
                 items_list: [
                     {
                         name: data.causale,
                         qty: 1,
-                        net_price: parseFloat(data.importo),
+                        net_price: importo,
                         vat: {
                             id: 0,
                             value: 0,
@@ -85,6 +88,13 @@ exports.handler = async (event) => {
                         name: 'Cassa'
                     }
                 },
+                payments_list: [
+                    {
+                        amount: importo,
+                        due_date: today,
+                        status: 'not_paid'
+                    }
+                ]
             },
         };
 

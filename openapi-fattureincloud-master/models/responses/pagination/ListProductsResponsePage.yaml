@@ -1,8 +1,0 @@
-title: ListProductsResponsePage
-type: object
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../../schemas/Product.yaml
-    nullable: true

@@ -1,7 +1,0 @@
-title: ListWebhooksSubscriptionsResponse
-type: object
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../schemas/WebhooksSubscription.yaml

@@ -1,6 +1,0 @@
-title: PriceListPricesType
-type: string
-enum:
-  - net
-  - gross
-description: Price list prices type

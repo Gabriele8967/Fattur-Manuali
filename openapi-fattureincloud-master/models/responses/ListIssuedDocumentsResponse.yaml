@@ -1,4 +1,0 @@
-title: ListIssuedDocumentsResponse
-allOf:
-  - $ref: ./pagination/Pagination.yaml
-  - $ref: ./pagination/ListIssuedDocumentsResponsePage.yaml

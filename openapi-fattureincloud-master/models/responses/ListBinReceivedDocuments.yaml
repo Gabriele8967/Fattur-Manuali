@@ -1,7 +1,0 @@
-title: ListBinReceivedDocuments
-type: object
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../schemas/ReceivedDocument.yaml

@@ -1,7 +1,0 @@
-title: GetNewReceivedDocumentTotalsRequest
-type: object
-description: ''
-properties:
-  data:
-    $ref: ../schemas/ReceivedDocument.yaml
-    nullable: true

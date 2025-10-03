@@ -1,4 +1,0 @@
-title: ListProductsResponse
-allOf:
-  - $ref: ./pagination/Pagination.yaml
-  - $ref: ./pagination/ListProductsResponsePage.yaml

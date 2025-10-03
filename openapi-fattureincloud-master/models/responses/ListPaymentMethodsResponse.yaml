@@ -1,9 +1,0 @@
-title: ListPaymentMethodsResponse
-type: object
-description: ''
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../schemas/PaymentMethod.yaml
-    nullable: true

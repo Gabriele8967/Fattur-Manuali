@@ -1,9 +1,0 @@
-title: GetReceiptsMonthlyTotalsResponse
-type: object
-description: ''
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../schemas/MonthlyTotal.yaml
-    nullable: true

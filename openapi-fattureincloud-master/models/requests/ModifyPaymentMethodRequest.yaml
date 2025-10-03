@@ -1,6 +1,0 @@
-title: ModifyPaymentMethodRequest
-type: object
-properties:
-  data:
-    $ref: ../schemas/PaymentMethod.yaml
-    nullable: true

@@ -1,6 +1,0 @@
-title: GetSupplierResponse
-type: object
-properties:
-  data:
-    $ref: ../schemas/Supplier.yaml
-    nullable: true

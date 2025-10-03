@@ -1,7 +1,0 @@
-title: ScheduleEmailRequest
-type: object
-properties:
-  data:
-    $ref: ../schemas/EmailSchedule.yaml
-    nullable: true
-description: ''

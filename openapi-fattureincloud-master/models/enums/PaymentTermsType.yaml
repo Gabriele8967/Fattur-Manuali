@@ -1,7 +1,0 @@
-title: PaymentTermsType
-type: string
-default: standard
-enum:
-  - standard
-  - end_of_month
-description: Payment terms type

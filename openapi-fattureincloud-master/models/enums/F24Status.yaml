@@ -1,7 +1,0 @@
-title: F24Status
-type: string
-enum:
-  - paid
-  - not_paid
-  - reversed
-description: F24 status

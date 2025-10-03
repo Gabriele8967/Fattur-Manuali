@@ -1,7 +1,0 @@
-title: ListPriceListsResponse
-type: object
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../schemas/PriceList.yaml

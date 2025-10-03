@@ -1,7 +1,0 @@
-title: ModifyReceiptRequest
-type: object
-description: ''
-properties:
-  data:
-    $ref: ../schemas/Receipt.yaml
-    nullable: true

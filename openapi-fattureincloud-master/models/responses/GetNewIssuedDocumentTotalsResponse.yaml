@@ -1,7 +1,0 @@
-title: GetNewIssuedDocumentTotalsResponse
-type: object
-description: ''
-properties:
-  data:
-    $ref: ../schemas/IssuedDocumentTotals.yaml
-    nullable: true

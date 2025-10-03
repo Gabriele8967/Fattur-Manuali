@@ -1,8 +1,0 @@
-title: ListClientsResponsePage
-type: object
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../../schemas/Client.yaml
-    nullable: true

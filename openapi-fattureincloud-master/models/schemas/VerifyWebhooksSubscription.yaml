@@ -1,9 +1,0 @@
-title: VerifyWebhooksSubscription
-type: object
-properties:
-  id:
-    type: string
-    nullable: true
-    description: Webhooks subscription id
-  verification_method:
-    $ref: ../enums/WebhooksSubscriptionVerificationMethod.yaml

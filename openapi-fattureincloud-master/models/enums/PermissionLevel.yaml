@@ -1,8 +1,0 @@
-title: PermissionLevel
-type: string
-enum:
-  - none
-  - read
-  - write
-  - detailed
-description: Permission level

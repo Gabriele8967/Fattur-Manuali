@@ -1,5 +1,0 @@
-title: PriceListItemsList
-type: object
-additionalProperties:
-  type: object
-  $ref: ./PriceListItem.yaml

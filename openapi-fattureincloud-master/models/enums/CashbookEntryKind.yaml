@@ -1,9 +1,0 @@
-title: CashbookEntryKind
-type: string
-enum:
-  - cashbook
-  - issued_document
-  - received_document
-  - tax
-  - receipt
-description: Cashbook kind

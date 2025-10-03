@@ -1,7 +1,0 @@
-title: ListDetailedCountriesResponse
-type: object
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../schemas/DetailedCountry.yaml

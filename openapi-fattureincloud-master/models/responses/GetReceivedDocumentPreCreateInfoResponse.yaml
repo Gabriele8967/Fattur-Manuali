@@ -1,7 +1,0 @@
-title: GetReceivedDocumentPreCreateInfoResponse
-type: object
-description: ''
-properties:
-  data:
-    $ref: ../schemas/ReceivedDocumentInfo.yaml
-    nullable: true

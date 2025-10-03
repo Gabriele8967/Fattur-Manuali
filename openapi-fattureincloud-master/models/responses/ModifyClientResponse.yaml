@@ -1,6 +1,0 @@
-title: ModifyClientResponse
-type: object
-properties:
-  data:
-    $ref: ../schemas/Client.yaml
-    nullable: true

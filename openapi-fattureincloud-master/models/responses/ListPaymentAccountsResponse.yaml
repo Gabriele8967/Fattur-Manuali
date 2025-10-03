@@ -1,9 +1,0 @@
-title: ListPaymentAccountsResponse
-type: object
-properties:
-  data:
-    type: array
-    items:
-      $ref: ../schemas/PaymentAccount.yaml
-    nullable: true
-description: ''

@@ -1,0 +1,76 @@
+functionsDirectory = "/home/gabriele/Scaricati/deploy-68de475d2e71335429646865/netlify/functions"
+functionsDirectoryOrigin = "config"
+headersOrigin = "config"
+redirectsOrigin = "config"
+plugins = []
+
+[build]
+publish = "/home/gabriele/Scaricati/deploy-68de475d2e71335429646865"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "echo 'Static site - no build required'"
+functions = "/home/gabriele/Scaricati/deploy-68de475d2e71335429646865/netlify/functions"
+
+[build.environment]
+NODE_VERSION = "18"
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[dev]
+command = "npx http-server . -p 8888"
+port = 8888.0
+
+[functions]
+
+[functions."*"]
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Frame-Options = "DENY"
+X-XSS-Protection = "1; mode=block"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+for = "/.netlify/functions/*"
+
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Headers = "Content-Type, Authorization"
+Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+
+[[redirects]]
+from = "/callback"
+to = "/callback.html"
+status = 200.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]

@@ -1,5 +1,0 @@
-title: GetTaxProfileResponse
-type: object
-properties:
-  data:
-    $ref: ../schemas/TaxProfile.yaml

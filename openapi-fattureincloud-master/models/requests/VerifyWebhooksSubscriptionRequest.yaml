@@ -1,5 +1,0 @@
-title: VerifyWebhooksSubscriptionRequest
-type: object
-properties:
-  data:
-    $ref: ../schemas/VerifyWebhooksSubscription.yaml

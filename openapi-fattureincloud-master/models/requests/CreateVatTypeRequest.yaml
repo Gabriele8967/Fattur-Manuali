@@ -1,6 +1,0 @@
-title: CreateVatTypeRequest
-type: object
-properties:
-  data:
-    $ref: ../schemas/VatType.yaml
-    nullable: true

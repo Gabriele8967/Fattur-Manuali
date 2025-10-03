@@ -1,5 +1,0 @@
-title: ListReceivedDocumentsResponse
-allOf:
-  - $ref: ./pagination/Pagination.yaml
-  - $ref: ./pagination/ListReceivedDocumentsResponsePage.yaml
-description: ''

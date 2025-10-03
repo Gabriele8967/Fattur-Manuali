@@ -75,7 +75,7 @@ exports.handler = async (event) => {
                         name: data.causale,
                         qty: 1,
                         net_price: importo,
-                                                vat: { id: 6 }, // ID per IVA esente (prestazioni sanitarie)                    },
+                                                vat: { id: 6, nature: 'N4' }, // ID e Natura per IVA esente (prestazioni sanitarie)                    },
                 ],
                 payment_method: {
                     name: 'Contanti',

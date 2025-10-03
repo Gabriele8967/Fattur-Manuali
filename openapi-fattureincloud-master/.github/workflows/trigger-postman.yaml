@@ -1,0 +1,36 @@
+name: Trigger Postman Collection Generation
+on: [ workflow_dispatch ]
+
+jobs:
+  trigger-postman:
+    runs-on: ubuntu-latest
+
+    steps:
+      - id: checkout
+        name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}
+
+      - id: setup-libraries
+        name: Install libraries
+        run: |
+          sudo apt update
+          sudo apt upgrade
+          sudo wget -qO /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+          sudo chmod +x /usr/local/bin/yq
+
+      - id: read-openapi-version
+        name: Read OpenAPI Version
+        run: |
+          OPENAPI_VERSION=$(yq e '.info.version' ./openapi.yaml)
+          echo "openapi_version=$OPENAPI_VERSION" >> $GITHUB_ENV
+
+      # We trigger the generation from OpenAPI repo to bump version also in the generated code
+      - id: trigger-event
+        name: Trigger Event
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}
+          event-type: generate-postman
+          client-payload: '{"version": "${{ env.openapi_version }}", "from-openapi": false}'

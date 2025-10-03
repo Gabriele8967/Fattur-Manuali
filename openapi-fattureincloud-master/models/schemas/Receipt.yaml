@@ -1,0 +1,61 @@
+title: Receipt
+type: object
+properties:
+  id:
+    type: integer
+    description: Receipt id
+    nullable: true
+  date:
+    type: string
+    description: Receipt date
+    format: date
+    nullable: true
+  number:
+    type: number
+    nullable: true
+    description: Receipt number
+  numeration:
+    type: string
+    description: Receipt numeration
+    nullable: true
+  amount_net:
+    type: number
+    description: Receipt total net amount
+    nullable: true
+  amount_vat:
+    type: number
+    description: Receipt total vat amount
+    nullable: true
+  amount_gross:
+    type: number
+    description: Receipt total gross amount
+    nullable: true
+  use_gross_prices:
+    type: boolean
+    nullable: true
+    description: Receipt uses gross prices
+  type:
+    $ref: ../enums/ReceiptType.yaml
+  description:
+    type: string
+    description: Receipt description
+    nullable: true
+  rc_center:
+    type: string
+    description: Receipt revenue center
+    nullable: true
+  created_at:
+    type: string
+    nullable: true
+    description: Receipt creation date
+  updated_at:
+    type: string
+    nullable: true
+    description: Receipt last update date
+  payment_account:
+    $ref: ./PaymentAccount.yaml
+  items_list:
+    type: array
+    nullable: true
+    items:
+      $ref: ./ReceiptItemsListItem.yaml

@@ -1,0 +1,13 @@
+title: ListUserCompaniesResponse
+type: object
+description: ''
+properties:
+  data:
+    type: object
+    properties:
+      companies:
+        type: array
+        items:
+          $ref: ../schemas/Company.yaml
+        nullable: true
+    nullable: true

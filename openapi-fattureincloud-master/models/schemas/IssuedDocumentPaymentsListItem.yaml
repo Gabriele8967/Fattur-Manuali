@@ -1,0 +1,45 @@
+title: IssuedDocumentPaymentsListItem
+type: object
+properties:
+  id:
+    type: integer
+    description: Issued document payment item id
+    nullable: true
+  due_date:
+    type: string
+    description: Issued document payment due date
+    format: date
+    example: '2018-04-03'
+    nullable: true
+  amount:
+    type: number
+    description: Issued document payment amount
+    example: 1.45
+    nullable: true
+  status:
+    $ref: ../enums/IssuedDocumentStatus.yaml
+  payment_account:
+    $ref: ./PaymentAccount.yaml
+  paid_date:
+    type: string
+    description: |-
+      Issued document payment date
+      [Only if status is paid]
+    format: date
+    example: '2018-04-03'
+    nullable: true
+  ei_raw:
+    type: object
+    nullable: true
+    description: Issued document payment advanced raw attributes for e-invoices
+  payment_terms:
+    type: object
+    properties:
+      days:
+        type: integer
+        nullable: true
+        description: >-
+          Issued document payment number of days by which the payment must be
+          made
+      type:
+        $ref: ../enums/PaymentTermsType.yaml

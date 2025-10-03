@@ -1,0 +1,66 @@
+title: Email
+type: object
+properties:
+  id:
+    type: integer
+    nullable: true
+    description: Email id
+  status:
+    $ref: ../enums/EmailStatus.yaml
+  sent_date:
+    type: string
+    nullable: true
+    description: Email sent date
+  errors_count:
+    type: integer
+    nullable: true
+    description: Email errors count
+  error_log:
+    type: string
+    nullable: true
+    description: Email errors log
+  from_email:
+    type: string
+    nullable: true
+    description: Email sender email
+  from_name:
+    type: string
+    nullable: true
+    description: Email sender name
+  to_email:
+    type: string
+    nullable: true
+    description: Email recipient email
+  to_name:
+    type: string
+    nullable: true
+    description: Email receipient name
+  subject:
+    type: string
+    nullable: true
+    description: Email subject
+  content:
+    type: string
+    nullable: true
+    description: Email content
+  copy_to:
+    type: string
+    nullable: true
+    description: Email cc
+  recipient_status:
+    $ref: ../enums/EmailRecipientStatus.yaml
+  recipient_date:
+    type: string
+    format: date-time
+    nullable: true
+    description: Email recipient date
+  kind:
+    type: string
+    nullable: true
+    description: Email kind
+  attachments:
+    type: array
+    nullable: true
+    description: Email attachments
+    items:
+      $ref: ./EmailAttachment.yaml

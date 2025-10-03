@@ -1,0 +1,166 @@
+type: object
+title: Client
+properties:
+  id:
+    type: integer
+    description: Client id
+    nullable: true
+  code:
+    type: string
+    example: '123'
+    description: Client code
+    nullable: true
+  name:
+    type: string
+    example: Rossi S.r.l.
+    description: Client name
+    nullable: true
+  type:
+    $ref: ../enums/ClientType.yaml
+  first_name:
+    type: string
+    description: Client first name
+    nullable: true
+  last_name:
+    type: string
+    description: Client last name
+    nullable: true
+  contact_person:
+    type: string
+    nullable: true
+    description: Client contact person
+  vat_number:
+    type: string
+    example: IT01234567890
+    description: Client vat number
+    nullable: true
+  tax_code:
+    type: string
+    example: RSSMRA44A12E890Q
+    description: Client tax code
+    nullable: true
+  address_street:
+    type: string
+    example: Via dei tigli, 12
+    description: Client address street
+    nullable: true
+  address_postal_code:
+    type: string
+    example: '24010'
+    description: Client address postal code
+    nullable: true
+  address_city:
+    type: string
+    example: Bergamo
+    description: Client address city
+    nullable: true
+  address_province:
+    type: string
+    example: BG
+    description: Client address province
+    nullable: true
+  address_extra:
+    type: string
+    description: Client address extra info
+    nullable: true
+  country:
+    type: string
+    example: Italia
+    description: Client country
+    nullable: true
+  country_iso:
+    type: string
+    example: Italia
+    description: Client country iso code
+    nullable: true
+  email:
+    type: string
+    example: mario.rossi@example.it
+    description: Client email
+    nullable: true
+  certified_email:
+    type: string
+    example: mario.rossi@pec.example.it
+    description: Client certified email
+    nullable: true
+  phone:
+    type: string
+    description: Client phone
+    nullable: true
+  fax:
+    type: string
+    description: Client fax
+    nullable: true
+  notes:
+    type: string
+    description: Client extra
+    nullable: true
+  default_vat:
+    $ref: ./VatType.yaml
+  default_payment_terms:
+    type: integer
+    example: 30
+    nullable: true
+    description: Client default payment terms
+  default_payment_terms_type:
+    $ref: ../enums/PaymentTermsType.yaml
+  default_payment_method:
+    $ref: ./PaymentMethod.yaml
+  bank_name:
+    type: string
+    description: Client bank name
+    nullable: true
+  bank_iban:
+    type: string
+    description: Client bank iban
+    nullable: true
+  bank_swift_code:
+    type: string
+    description: Client bank swift code
+    nullable: true
+  shipping_address:
+    type: string
+    description: Client shipping address
+    nullable: true
+  e_invoice:
+    type: boolean
+    description: Use e-invoices for this entity
+    nullable: true
+  discount_highlight:
+    type: boolean
+    description: Highlight Discount
+    nullable: true
+  ei_code:
+    type: string
+    description: |
+      Client e-invoice code
+    nullable: true
+  default_discount:
+    type: number
+    description: Client default discount
+    nullable: true
+  has_intent_declaration:
+    type: boolean
+    description: Client has intent declaration
+    nullable: true
+  intent_declaration_protocol_number:
+    type: string
+    description: Client intent declaration protocol number
+    nullable: true
+  intent_declaration_protocol_date:
+    type: string
+    format: date
+    description: Client intent declaration protocol date
+    nullable: true
+  price_list_id:
+    type: string
+    description: Price list id
+    nullable: true
+  created_at:
+    type: string
+    nullable: true
+    description: Client creation date
+  updated_at:
+    type: string
+    nullable: true
+    description: Client last update date

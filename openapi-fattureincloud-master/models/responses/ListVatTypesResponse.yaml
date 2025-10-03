@@ -1,0 +1,9 @@
+title: ListVatTypesResponse
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../schemas/VatType.yaml
+    nullable: true
+description: ''

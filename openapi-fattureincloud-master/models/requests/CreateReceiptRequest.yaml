@@ -1,0 +1,11 @@
+title: CreateReceiptRequest
+type: object
+description: ''
+properties:
+  data:
+    $ref: ../schemas/Receipt.yaml
+    nullable: true
+  autocomplete_number:
+    type: boolean
+    description: If true, the number is autocompleted progressively.
+    nullable: true

@@ -1,0 +1,6 @@
+title: GetExistingIssuedDocumentTotalsRequest
+type: object
+properties:
+  data:
+    $ref: ../schemas/IssuedDocument.yaml
+    nullable: true

@@ -1,0 +1,4 @@
+title: ListClientsResponse
+allOf:
+  - $ref: ./pagination/Pagination.yaml
+  - $ref: ./pagination/ListClientsResponsePage.yaml

@@ -1,0 +1,7 @@
+title: GetArchiveDocumentResponse
+type: object
+properties:
+  data:
+    $ref: ../schemas/ArchiveDocument.yaml
+    nullable: true
+description: ''

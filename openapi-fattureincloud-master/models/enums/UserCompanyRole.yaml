@@ -1,0 +1,7 @@
+title: UserCompanyRole
+type: string
+description: User company role
+enum:
+  - master
+  - subaccount
+  - employee

@@ -1,0 +1,13 @@
+title: CreateReceivedDocumentRequest
+type: object
+description: ''
+properties:
+  pending_id:
+    type: integer
+    description: >-
+      Pending received document id of the document from which the new document
+      is created.
+    nullable: true
+  data:
+    $ref: ../schemas/ReceivedDocument.yaml
+    nullable: true

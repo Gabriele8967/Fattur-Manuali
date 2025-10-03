@@ -1,0 +1,141 @@
+name: Bump and Publish OpenAPI
+on: [workflow_dispatch]
+# on:
+#   push:
+#     branches:
+#       - master
+#     paths:
+#       - 'openapi.yaml'
+#       - 'models/**'
+jobs:
+  filter-trigger:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.pusher-check.outputs.status }}
+    steps:
+      - id: retrieve-name
+        if: ${{ !env.ACT }}
+        name: Retrieve name
+        run: |
+          echo "Retrieving name..."
+          echo "The name of the pusher: ${{ github.event.pusher.name }}"
+          echo "The email of the pusher: ${{ github.event.pusher.email }}"
+          echo "pusher_name=${{ github.event.pusher.name }}" >> $GITHUB_ENV
+
+      - id: retrieve-name-mock
+        if: ${{ env.ACT }}
+        name: Retrieve name Mock
+        run: |
+          echo "pusher_name=fake_pusher" >> $GITHUB_ENV
+
+      # The filter is executed only on Github Action, otherwise always returns execute
+      - id: pusher-check
+        name: Check pusher
+        env:
+          BOT_NAME: fattureincloud-bot
+        run: |
+          if [ ${{ !env.ACT }} ];
+          then
+            echo "CHECKING..."
+            if [ '${{ env.pusher_name }}' == '${{ env.BOT_NAME }}' ]; 
+            then 
+              echo "WORKFLOW MUST BE SKIPPED!"
+              echo "status=stop" >>$GITHUB_OUTPUT
+            else 
+              echo "EXECUTING..."
+              echo "status=execute" >>$GITHUB_OUTPUT
+
+            fi
+          else
+            echo "LOCAL ENV, SKIPPING FILTER..."
+            echo "status=execute" >>$GITHUB_OUTPUT
+          fi
+
+  bump-openapi-version:
+    runs-on: ubuntu-latest
+    if: needs.filter-trigger.outputs.status == 'execute'
+    needs: filter-trigger
+    outputs:
+      version: ${{ steps.bump-version.outputs.version }}
+    steps:
+      - id: checkout
+        name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}
+
+      - id: init-git
+        name: Init GIT
+        run: |
+          git config --global user.email "info@fattureincloud.it"
+          git config --global user.name "fattureincloud-bot"
+
+      - id: setup-node
+        name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - id: setup-java
+        name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - id: setup-libraries
+        name: Install libraries
+        run: |
+          npm install -g yarn
+          yarn global add @apidevtools/swagger-cli @openapitools/openapi-generator-cli standard-version swagger-merger 
+          sudo apt update
+          sudo apt upgrade
+          sudo wget -qO /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+          sudo chmod +x /usr/local/bin/yq
+          cd ./scripts/
+          yarn
+
+      - id: validate-spec
+        name: Validate specification
+        run: |
+          swagger-cli validate openapi.yaml
+          openapi-generator-cli validate -i ./openapi.yaml
+
+      - id: bump-version
+        name: Bump OpenAPI spec version
+        run: |
+          CURR_VER=$(yq e '.info.version' ./openapi.yaml)
+          echo "Previous version: $CURR_VER"
+          standard-version
+          BUMP_VER=$(yq e '.info.version' ./openapi.yaml)
+          echo "New version: $BUMP_VER"
+          echo "version=$BUMP_VER" >>$GITHUB_OUTPUT
+
+
+      - id: check-git
+        name: Check GIT
+        run: |
+          git status
+          git --no-pager log -10
+          CURR_BRANCH=$(basename "${{ github.ref }}")
+          echo "curr_branch=$CURR_BRANCH" >> $GITHUB_ENV
+
+      - id: git-push
+        name: Pushing to Git repo
+        if: ${{ !env.ACT }}
+        run: |
+          git push origin
+          git push origin --tags
+
+  trigger-enrich-and-generate-workflows:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        event: ['enrich-spec', 'generate-php', 'generate-javascript', 'generate-csharp', 'generate-java', 'generate-ruby', 'generate-postman', 'generate-python', 'generate-typescript-axios', 'generate-go', 'generate-zapier']
+    needs: bump-openapi-version
+    steps:
+      - id: trigger-event
+        name: Trigger Event
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}
+          event-type: ${{ matrix.event }}
+          client-payload: '{"version": "${{ needs.bump-openapi-version.outputs.version }}", "from-openapi": true}'

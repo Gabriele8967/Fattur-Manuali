@@ -1,0 +1,58 @@
+name: OpenAPI Validation
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+jobs:
+  validate-openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - id: check-pr-author
+        name: Check PR author
+        env:
+          BOT_NAME: fattureincloud-bot
+        run: |
+          echo "Checking if this PR must be validated..."
+          echo "This PR is opened by ${{ github.event.pull_request.user.login }} ."
+          if [ '${{ github.event.pull_request.user.login }}' == '${{ env.BOT_NAME }}' ]; 
+          then 
+            echo "WORKFLOW MUST BE SKIPPED!"
+            echo "status=stop" >> $GITHUB_ENV
+          else 
+            echo "EXECUTING..."
+            echo "status=execute" >> $GITHUB_ENV;
+          fi
+
+      - id: checkout
+        if: ${{ env.status == 'execute' }}
+        name: Checkout repo
+        uses: actions/checkout@v4
+
+      - id: setup-node
+        if: ${{ env.status == 'execute' }}
+        name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - id: setup-java
+        if: ${{ env.status == 'execute' }}
+        name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - id: setup-libraries
+        if: ${{ env.status == 'execute' }}
+        name: Install libraries
+        run: |
+          npm install -g yarn
+          yarn global add @apidevtools/swagger-cli @openapitools/openapi-generator-cli
+
+      - id: validate-spec
+        if: ${{ env.status == 'execute' }}
+        name: Validate specification
+        run: |
+          swagger-cli validate openapi.yaml
+          openapi-generator-cli validate -i ./openapi.yaml
+

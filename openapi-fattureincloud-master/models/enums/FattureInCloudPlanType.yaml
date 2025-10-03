@@ -1,0 +1,9 @@
+title: FattureInCloudPlanType
+type: string
+description: Fatture in Cloud account plan type.
+enum:
+  - trial
+  - standard
+  - premium
+  - premium_plus
+  - complete

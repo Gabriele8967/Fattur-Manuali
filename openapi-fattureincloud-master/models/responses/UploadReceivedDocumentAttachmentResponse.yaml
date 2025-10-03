@@ -1,0 +1,6 @@
+title: UploadReceivedDocumentAttachmentResponse
+type: object
+properties:
+  data:
+    $ref: ../schemas/AttachmentData.yaml
+    nullable: true

@@ -1,0 +1,9 @@
+title: ListTemplatesResponse
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../schemas/DocumentTemplate.yaml
+    nullable: true
+description: ''

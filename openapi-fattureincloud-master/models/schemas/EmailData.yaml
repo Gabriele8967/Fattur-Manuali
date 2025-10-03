@@ -1,0 +1,60 @@
+type: object
+title: EmailData
+properties:
+  recipient_email:
+    type: string
+    description: Email recipient
+    nullable: true
+  default_sender_email:
+    type: object
+    description: >-
+      Default sender email. (Other emails can be found in
+      **sender_emails_list**)
+    nullable: true
+    properties:
+      id:
+        type: integer
+        nullable: true
+        description: Default sender email id
+      email:
+        type: string
+        description: Default sender email address
+        nullable: true
+  sender_emails_list:
+    type: array
+    description: List of all emails from which the document can be sent
+    nullable: true
+    items:
+      $ref: ./SenderEmail.yaml
+  cc_email:
+    type: string
+    description: Email cc [by default is the logged company email]
+    nullable: true
+  subject:
+    type: string
+    description: Email subject
+    nullable: true
+  body:
+    type: string
+    description: Email body
+    nullable: true
+  document_exists:
+    type: boolean
+    description: Document exists if it is not a delivery note
+    nullable: true
+  delivery_note_exists:
+    type: boolean
+    description: Document is a delivery note
+    nullable: true
+  attachment_exists:
+    type: boolean
+    description: Document has attachment
+    nullable: true
+  accompanying_invoice_exists:
+    type: boolean
+    description: Document has accompanying invoice
+    nullable: true
+  default_attach_pdf:
+    type: boolean
+    nullable: true
+    description: Attach document pdf

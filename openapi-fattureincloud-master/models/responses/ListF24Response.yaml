@@ -1,0 +1,6 @@
+title: ListF24Response
+description: ''
+allOf:
+  - $ref: ./pagination/Pagination.yaml
+  - $ref: ./pagination/ListF24ResponsePage.yaml
+  - $ref: ./pagination/ListF24ResponseAggregation.yaml

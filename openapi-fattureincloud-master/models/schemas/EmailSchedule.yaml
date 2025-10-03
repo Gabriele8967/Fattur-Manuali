@@ -1,0 +1,53 @@
+type: object
+title: EmailSchedule
+properties:
+  sender_id:
+    type: integer
+    description: Email sender id [required if **sender_email** is not specified]
+    nullable: true
+  sender_email:
+    type: string
+    description: Email sender address [required if **sender_id** is not specified]
+    nullable: true
+  recipient_email:
+    type: string
+    description: Email recipient emails [comma separated]
+    nullable: true
+  subject:
+    type: string
+    description: Email subject
+    nullable: true
+  body:
+    type: string
+    description: Email body [HTML Escaped] [max size 50KiB]
+    nullable: true
+  include:
+    type: object
+    nullable: true
+    properties:
+      document:
+        type: boolean
+        description: Include a button to view the document
+        nullable: true
+      delivery_note:
+        type: boolean
+        description: Include a button to view the delivery note
+        nullable: true
+      attachment:
+        type: boolean
+        description: Include a button to view the attachment
+        nullable: true
+      accompanying_invoice:
+        type: boolean
+        description: Include a button to view the accompanying invoice
+        nullable: true
+  attach_pdf:
+    type: boolean
+    description: Attach the pdf of the document
+    nullable: true
+  send_copy:
+    type: boolean
+    description: >-
+      Send a copy of the email to the **cc_email** specified by **Get email
+      data**
+    nullable: true

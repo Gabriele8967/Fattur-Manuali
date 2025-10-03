@@ -1,0 +1,8 @@
+title: ListReceivedDocumentsResponsePage
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../../schemas/ReceivedDocument.yaml
+    nullable: true

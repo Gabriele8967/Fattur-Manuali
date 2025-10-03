@@ -1,0 +1,7 @@
+title: ModifyArchiveDocumentResponse
+type: object
+description: ''
+properties:
+  data:
+    $ref: ../schemas/ArchiveDocument.yaml
+    nullable: true

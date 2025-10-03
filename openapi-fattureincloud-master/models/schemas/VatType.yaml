@@ -1,0 +1,51 @@
+type: object
+nullable: true
+title: VatType
+properties:
+  id:
+    type: integer
+    description: Vat type id
+    nullable: true
+  value:
+    type: number
+    description: '[Read Only] Vat type percentual value'
+    example: 22
+    nullable: true
+  description:
+    type: string
+    description: Vat type short description
+    example: Non imponibile art. 123
+    nullable: true
+  notes:
+    type: string
+    description: Vat type notes shown in documents
+    example: IVA non imponibile ai sensi dell'articolo 123, comma 2
+    nullable: true
+  e_invoice:
+    type: boolean
+    description: Vat type is usable for e-invoices
+    nullable: true
+  ei_type:
+    type: string
+    description: Vat type e-invoice type (natura)
+    example: 2
+    nullable: true
+  ei_description:
+    type: string
+    description: Vat type e-invoice description
+    nullable: true
+  editable:
+    type: boolean
+    description: |-
+      [Read Only]
+      Is the vat type is editable.
+    nullable: true
+    readOnly: true
+  is_disabled:
+    type: boolean
+    description: Is the vat type disabled
+    nullable: true
+  default:
+    description: If the vat type is default
+    type: boolean
+    nullable: true

@@ -1,0 +1,7 @@
+title: GetExistingReceivedDocumentTotalsResponse
+type: object
+properties:
+  data:
+    $ref: ../schemas/ReceivedDocumentTotals.yaml
+    nullable: true
+description: ''

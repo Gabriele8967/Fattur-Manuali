@@ -1,0 +1,11 @@
+title: PaymentMethodDetails
+type: object
+properties:
+  title:
+    type: string
+    description: Payment method details title
+    nullable: true
+  description:
+    type: string
+    description: Payment method details description
+    nullable: true

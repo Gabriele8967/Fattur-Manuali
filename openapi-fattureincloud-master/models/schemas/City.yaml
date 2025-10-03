@@ -1,0 +1,15 @@
+title: City
+type: object
+properties:
+  postal_code:
+    type: string
+    description: City postal code
+    nullable: true
+  city:
+    type: string
+    description: City name
+    nullable: true
+  province:
+    type: string
+    description: City province
+    nullable: true

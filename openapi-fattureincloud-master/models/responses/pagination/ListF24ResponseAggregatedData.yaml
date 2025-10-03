@@ -1,0 +1,7 @@
+title: ListF24ResponseAggregatedData
+type: object
+properties:
+  amount:
+    type: number
+    description: Total amount.
+    nullable: true

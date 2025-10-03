@@ -1,0 +1,4 @@
+title: ListSuppliersResponse
+allOf:
+  - $ref: ./pagination/Pagination.yaml
+  - $ref: ./pagination/ListSuppliersResponsePage.yaml

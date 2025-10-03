@@ -1,0 +1,7 @@
+title: CreateCashbookEntryResponse
+description: ''
+type: object
+properties:
+  data:
+    $ref: ../schemas/CashbookEntry.yaml
+    nullable: true

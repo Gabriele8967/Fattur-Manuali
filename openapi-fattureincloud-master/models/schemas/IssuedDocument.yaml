@@ -1,0 +1,520 @@
+title: IssuedDocument
+type: object
+properties:
+  id:
+    type: integer
+    description: Issued document id
+    nullable: true
+  entity:
+    $ref: ./Entity.yaml
+  type:
+    $ref: ../enums/IssuedDocumentType.yaml
+  number:
+    type: integer
+    description: |-
+      Issued document number
+      [If not specified, next number is used]
+    example: 1
+    nullable: true
+  numeration:
+    type: string
+    description: |-
+      Issued document numeration
+      [Not available if type=delivery_note]
+    example: /A
+    nullable: true
+  date:
+    type: string
+    description: |-
+      Issued document date
+      [defaults to today's date]
+    format: date
+    nullable: true
+  year:
+    type: integer
+    description: Issued document year
+    nullable: true
+  currency:
+    $ref: ./Currency.yaml
+  language:
+    $ref: ./Language.yaml
+  subject:
+    type: string
+    description: Issued document subject [not shown on the PDF]
+    nullable: true
+  visible_subject:
+    type: string
+    description: Issued document visible subject
+    nullable: true
+  rc_center:
+    type: string
+    description: Issued document revenue center [or cost center if type=supplier_order].
+    nullable: true
+  notes:
+    type: string
+    description: Issued document extra notes
+    nullable: true
+  rivalsa:
+    type: number
+    description: Issued document "Rivalsa INPS" percentual value
+    nullable: true
+  cassa:
+    type: number
+    description: Issued document "Cassa previdenziale" percentual value
+    nullable: true
+  amount_cassa:
+    type: number
+    description: |-
+      [Read Only]
+      Issued document cassa amount.
+    nullable: true
+    readOnly: true
+  cassa_taxable:
+    type: number
+    description: Issued document cassa taxable percentage
+    nullable: true
+  amount_cassa_taxable:
+    type: number
+    nullable: true
+    description: |-
+      [Can be set only if cassa_taxable is NULL]
+      Issued document cassa taxable amount
+  cassa2:
+    type: number
+    description: Issued document "Cassa previdenziale 2" percentual value
+    nullable: true
+  amount_cassa2:
+    type: number
+    nullable: true
+    description: |-
+      [Read Only]
+      Issued document cassa2 amount
+    readOnly: true
+  cassa2_taxable:
+    type: number
+    description: Issued document cassa2 taxable percentage
+    nullable: true
+  amount_cassa2_taxable:
+    type: number
+    nullable: true
+    description: |-
+      [Can be set only if cassa2_taxable is NULL]
+      Issued document cassa2 taxable amount
+  global_cassa_taxable:
+    type: number
+    description: Issued document global cassa taxable percentage
+    nullable: true
+  amount_global_cassa_taxable:
+    type: number
+    nullable: true
+    description: |-
+      [Can be set only if global_cassa_taxable is NULL]
+      Issued document global cassa taxable amount
+  withholding_tax:
+    type: number
+    description: Issued document withholding tax (ritenuta d'acconto) percentual value
+    nullable: true
+  withholding_tax_taxable:
+    type: number
+    description: Issued document withholding tax taxable (imponibile) percentual value
+    nullable: true
+  other_withholding_tax:
+    type: number
+    description: Issued document other withholding tax (altra ritenuta) percentual value
+    nullable: true
+  stamp_duty:
+    type: number
+    description: |-
+      Issued document stamp duty value
+      [0 if not present]
+    nullable: true
+  payment_method:
+    $ref: ./PaymentMethod.yaml
+  use_split_payment:
+    type: boolean
+    description: Issued document uses split payment
+    nullable: true
+  use_gross_prices:
+    type: boolean
+    description: Issued document uses gross prices
+    nullable: true
+  e_invoice:
+    type: boolean
+    description: Issued document is an e-invoice.
+    nullable: true
+  ei_data:
+    type: object
+    nullable: true
+    description: |-
+      Issued document e-invoice data
+      [Only if e_invoice=true]
+    properties:
+      vat_kind:
+        $ref: ../enums/VatKind.yaml
+      original_document_type:
+        $ref: ../enums/OriginalDocumentType.yaml
+      od_number:
+        type: string
+        nullable: true
+        description: E-invoice original document number
+      od_date:
+        type: string
+        description: E-invoice original document date
+        format: date
+        nullable: true
+      cig:
+        type: string
+        nullable: true
+        description: E-invoice CIG
+      cup:
+        type: string
+        nullable: true
+        description: E-invoice CUP
+      payment_method:
+        type: string
+        nullable: true
+        description: >-
+          E-invoice payment method [required for e-invoices] (see
+          [here](https://www.fatturapa.gov.it/export/documenti/fatturapa/v1.2.2/Rappresentazione_Tabellare_FattOrdinaria_V1.2.2.pdf)
+          for the accepted values of ModalitaPagamento)
+      bank_name:
+        type: string
+        nullable: true
+        description: E-invoice bank name
+      bank_iban:
+        type: string
+        nullable: true
+        description: E-invoice bank IBAN
+      bank_beneficiary:
+        type: string
+        nullable: true
+        description: E-invoice bank beneficiary
+      invoice_number:
+        type: string
+        description: E-invoice invoice number
+        nullable: true
+      invoice_date:
+        type: string
+        format: date
+        description: E-invoice invoice date
+        nullable: true
+  ei_cassa_type:
+    type: string
+    nullable: true
+    description: E-invoice cassa type
+  ei_cassa2_type:
+    type: string
+    nullable: true
+    description: E-invoice cassa2 type
+  ei_withholding_tax_causal:
+    type: string
+    nullable: true
+    description: E-invoice withholding tax causal
+  ei_other_withholding_tax_type:
+    type: string
+    nullable: true
+    description: E-invoice other withholding tax type
+  ei_other_withholding_tax_causal:
+    type: string
+    nullable: true
+    description: E-invoice other withholding tax causal
+  items_list:
+    type: array
+    nullable: true
+    items:
+      $ref: ./IssuedDocumentItemsListItem.yaml
+  payments_list:
+    type: array
+    nullable: true
+    items:
+      $ref: ./IssuedDocumentPaymentsListItem.yaml
+  template:
+    $ref: ./DocumentTemplate.yaml
+  delivery_note_template:
+    $ref: ./DocumentTemplate.yaml
+  acc_inv_template:
+    $ref: ./DocumentTemplate.yaml
+  h_margins:
+    type: integer
+    description: Issued document PDF horizontal margins
+    nullable: true
+  v_margins:
+    type: integer
+    description: Issued document PDF vertical margins
+    nullable: true
+  show_payments:
+    type: boolean
+    description: Show the expiration dates of the payments on the document
+    nullable: true
+  show_payment_method:
+    type: boolean
+    description: Show the payment method details on the document
+    nullable: true
+  show_totals:
+    $ref: ../enums/ShowTotalsMode.yaml
+  show_notification_button:
+    type: boolean
+    description: Show notification button in the PDF
+    nullable: true
+  show_tspay_button:
+    type: boolean
+    description: Show ts pay button in the PDF
+    nullable: true
+  delivery_note:
+    type: boolean
+    nullable: true
+    description: Issued document has delivery note
+  accompanying_invoice:
+    type: boolean
+    description: Issued document has an accompanying invoice
+    nullable: true
+  dn_number:
+    type: integer
+    description: Issued document attached delivery note number
+    nullable: true
+  dn_date:
+    type: string
+    description: Issued document attached delivery note date
+    format: date
+    nullable: true
+  dn_ai_packages_number:
+    type: string
+    nullable: true
+    description: Issued document attached delivery note number of packages
+  dn_ai_weight:
+    type: string
+    nullable: true
+    description: Issued document attached delivery note package weight
+  dn_ai_causal:
+    type: string
+    nullable: true
+    description: Issued document attached delivery note causal
+  dn_ai_destination:
+    type: string
+    nullable: true
+    description: Issued document attached delivery note destination
+  dn_ai_transporter:
+    type: string
+    nullable: true
+    description: Issued document attached delivery note transporter
+  dn_ai_notes:
+    type: string
+    nullable: true
+    description: Issued document attached delivery note notes
+  is_marked:
+    type: boolean
+    description: Issued document is marked
+    nullable: true
+  amount_net:
+    type: number
+    description: |-
+      [Read only]
+      Issued document total net amount
+    nullable: true
+    readOnly: true
+  amount_vat:
+    type: number
+    description: |-
+      [Read Only]
+      Issued document total vat amount
+    nullable: true
+    readOnly: true
+  amount_gross:
+    type: number
+    description: |-
+      [Read Only]
+      Issued document total gross amount
+    nullable: true
+    readOnly: true
+  amount_due_discount:
+    type: number
+    description: Issued document amount due discount
+    nullable: true
+  amount_rivalsa:
+    type: number
+    description: |-
+      [Read Only]
+      Issued document rivalsa amount
+    nullable: true
+    readOnly: true
+  amount_rivalsa_taxable:
+    type: number
+    nullable: true
+    description: Issued document taxable rivalsa amount
+  amount_withholding_tax:
+    type: number
+    description: |-
+      [Read Only]
+      Issued document withholding tax amount (ritenuta d'acconto).
+    nullable: true
+    readOnly: true
+  amount_withholding_tax_taxable:
+    type: number
+    nullable: true
+    description: Issued document taxable withholding tax amount
+  amount_other_withholding_tax:
+    type: number
+    description: |-
+      [Read Only]
+      Issued document other withholding tax amount (altra ritenuta)
+    nullable: true
+    readOnly: true
+  amount_other_withholding_tax_taxable:
+    type: number
+    nullable: true
+    description: Issued document taxable other withholding tax amount
+  amount_enasarco_taxable:
+    type: number
+    nullable: true
+    description: Issued document taxable enasarco amount
+  extra_data:
+    type: object
+    nullable: true
+    description: >-
+      Issued document extra data [TS fields follow the technical specifications
+      provided by "Sistema Tessera Sanitaria"]
+    properties:
+      multifatture_sent:
+        type: integer
+        nullable: true
+      ts_communication:
+        type: boolean
+        nullable: true
+        description: Send issued document to "Sistema Tessera Sanitaria"
+      ts_flag_tipo_spesa:
+        type: number
+        nullable: true
+        description: Issued document ts "tipo spesa" [TK, FC, FV, SV,SP, AD, AS, ECG, SR]
+      ts_pagamento_tracciato:
+        type: boolean
+        nullable: true
+        description: Issued document ts traced payment
+      ts_tipo_spesa:
+        type: string
+        description: >-
+          Can be [ 'TK', 'FC', 'FV', 'SV', 'SP', 'AD', 'AS', 'SR', 'CT', 'PI',
+          'IC', 'AA' ]. Refer to the technical specifications to learn more.
+        nullable: true
+      ts_opposizione:
+        type: boolean
+        nullable: true
+        description: Issued document ts "opposizione"
+      ts_status:
+        type: integer
+        nullable: true
+        description: Issued document ts status
+      ts_file_id:
+        type: string
+        nullable: true
+        description: Issued document ts file id
+      ts_sent_date:
+        type: string
+        nullable: true
+        format: date
+        description: Issued document ts sent date
+      ts_full_amount:
+        type: boolean
+        nullable: true
+        description: Issued document ts total amount
+      imported_by:
+        type: string
+        nullable: true
+        description: Issued document imported by software
+  seen_date:
+    type: string
+    nullable: true
+    description: Issued document seen date
+    format: date
+  next_due_date:
+    type: string
+    nullable: true
+    description: Issued document date of the next not paid payment
+    format: date
+  url:
+    type: string
+    description: |-
+      [Temporary] [Read Only]
+      Issued document url of the document PDF file
+    nullable: true
+  dn_url:
+    type: string
+    description: |-
+      [Temporary] [Read Only]
+      Issued document url of the attached delivery note PDF file
+    nullable: true
+  ai_url:
+    type: string
+    description: |-
+      [Temporary] [Read Only]
+      Issued document url of the accompanying invoice PDF file
+    nullable: true
+  attachment_url:
+    type: string
+    description: |-
+      [Temporary] [Read Only]
+      Issued document url of the attached file
+    nullable: true
+    readOnly: true
+  attachment_token:
+    type: string
+    nullable: true
+    description: >-
+      [Write Only]
+
+      Issued document attachment token returned by POST
+      /issued_documents/attachment
+    writeOnly: true
+  ei_raw:
+    type: object
+    nullable: true
+    description: Issued document advanced raw attributes for e-invoices
+  ei_status:
+    type: string
+    description: |
+      [Read only] Status of the e-invoice.
+        * **attempt** - We are trying to send the invoice, please wait up to 2 hours
+        * **missing** - The invoice is missing
+        * **not_sent** - The invoice has yet to be sent
+        * **sent** - The invoice was sent
+        * **pending** - The checks for the digital signature and sending are in progress
+        * **processing** - The SDI is delivering the invoice to the customer
+        * **error** - An error occurred while handling the invoice, please try to resend it or contact support
+        * **discarded** - The invoice has been rejected by the SDI, so it must be corrected and re-sent
+        * **not_delivered** - The SDI was unable to deliver the invoice
+        * **accepted** - The customer accepted the invoice
+        * **rejected** - The customer rejected the invoice, so it must be corrected
+        * **no_response** - A response has not yet been received whithin the deadline, contact the customer to ascertain the status of the invoice
+        * **manual_accepted** - The customer accepted the invoice
+        * **manual_rejected** - The customer rejected the invoice
+    enum:
+      - attempt
+      - missing
+      - not_sent
+      - sent
+      - pending
+      - processing
+      - error
+      - discarded
+      - not_delivered
+      - accepted
+      - rejected
+      - no_response
+      - manual_accepted
+      - manual_rejected
+    nullable: true
+  price_list_id:
+    type: string
+    description: Price list id
+    nullable: true
+  locked:
+    type: boolean
+    nullable: true
+    description: Issued Document can't be edited
+  created_at:
+    type: string
+    nullable: true
+    description: Issued document creation date
+  updated_at:
+    type: string
+    nullable: true
+    description: Issued document last update date

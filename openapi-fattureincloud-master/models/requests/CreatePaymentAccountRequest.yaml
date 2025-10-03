@@ -1,0 +1,6 @@
+title: CreatePaymentAccountRequest
+type: object
+properties:
+  data:
+    $ref: ../schemas/PaymentAccount.yaml
+    nullable: true

@@ -1,0 +1,162 @@
+name: Generate Ruby SDK
+on:
+  repository_dispatch:
+    types: [generate-ruby]
+
+jobs:
+  generate-ruby-sdk:
+    runs-on: ubuntu-latest
+    env:
+      GIT_REPO_ID: fattureincloud-ruby-sdk
+      GIT_USER_ID: fattureincloud
+    steps:
+
+      - id: checkout
+        name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}
+
+      - id: checkout-ruby
+        name: Checkout Ruby repo
+        env:
+          GIT_REPO_PATH: '${{ env.GIT_USER_ID }}/${{ env.GIT_REPO_ID }}'
+        uses: actions/checkout@v4
+        with:
+          path: ./generated/ruby
+          ref: master
+          repository: ${{ env.GIT_REPO_PATH }}
+          token: ${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}
+
+      - id: init-git
+        name: Init GIT
+        run: |
+          git config --global user.email "info@fattureincloud.it"
+          git config --global user.name "fattureincloud-bot"
+
+      - id: setup-node
+        name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - id: setup-java
+        name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - id: setup-ruby
+        name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.0
+
+      - id: setup-libraries
+        name: Install libraries
+        run: |
+          npm install -g yarn
+          yarn global add @apidevtools/swagger-cli @openapitools/openapi-generator-cli standard-version
+          sudo apt update
+          sudo apt upgrade
+          sudo wget -qO /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+          sudo chmod +x /usr/local/bin/yq
+          cd ./scripts/
+          yarn
+          cd ../generated/ruby/scripts
+          yarn
+
+      - id: bump-ruby-sdk-version
+        name: Bump Ruby SDK
+        env:
+          OPENAPI_VERSION: ${{ github.event.client_payload.version }}
+        run: |
+
+          echo "openapi_version=$OPENAPI_VERSION"
+
+          BUMP_TYPE=$(node ./scripts/sdk-version-checker.js ./generated/ruby/sdk-version.yaml $OPENAPI_VERSION)
+
+          cd ./generated/ruby
+
+          if [ "$BUMP_TYPE" == "patch" ];then
+            echo 'Bumping the SDK patch version...'
+            standard-version --skip.tag --skip.changelog --skip.commit --release-as patch
+          elif [ "$BUMP_TYPE" == "openapi" ];then
+            echo 'Using the openapi version...'
+            standard-version --skip.tag --skip.changelog --skip.commit --release-as $OPENAPI_VERSION
+          else
+            echo "Something bad happened - impossible to bump Ruby SDK version. value=$BUMP_TYPE"
+          fi
+
+          SDK_VERSION=$(yq e '.info.version' ./sdk-version.yaml)
+
+
+          echo "sdk_version=$SDK_VERSION" >> $GITHUB_ENV
+          echo "openapi_version=$OPENAPI_VERSION" >> $GITHUB_ENV
+
+      - id: move-custom-files-to-backup
+        name: Move custom files to backup
+        run: |
+          mkdir -p ./backup/ruby/lib/fattureincloud_ruby_sdk/filter
+          mkdir -p ./backup/ruby/lib/fattureincloud_ruby_sdk/oauth2
+          mv ./generated/ruby/lib/fattureincloud_ruby_sdk/filter ./backup/ruby/lib/fattureincloud_ruby_sdk/
+          mv ./generated/ruby/lib/fattureincloud_ruby_sdk/oauth2 ./backup/ruby/lib/fattureincloud_ruby_sdk/
+
+      - id: delete-old-files
+        name: Delete old files
+        run: |
+          rm -rf ./generated/ruby/lib
+          rm -rf ./generated/ruby/docs
+
+      - id: generate-ruby-sdk
+        name: Generate Ruby SDK
+        env:
+          GEM_AUTHOR: "\"Fatture in Cloud API Team\""
+          GEM_AUTHOR_EMAIL: "info@fattureincloud.it"
+          GEM_DESCRIPTION: "\"Ruby SDK for the Fatture in Cloud API\""
+          GEM_HOMEPAGE: "https://github.com/fattureincloud/fattureincloud-ruby-sdk"
+          GEM_LICENSE: "MIT"
+          GEM_NAME: "fattureincloud_ruby_sdk"
+          MODULE_NAME: "FattureInCloud_Ruby_Sdk"
+          APP_NAME: "FattureInCloud"
+          MINIMUM_VERSION: "2.4"
+
+        run: |
+          SDK_VERSION=${{ env.sdk_version }}
+          echo "${{ env.sdk_version }}"
+          
+          RELEASE_NOTE="\"bumping version to $SDK_VERSION\""
+
+          USER_AGENT="$APP_NAME/${{ env.sdk_version }}/Ruby-SDK"
+
+          openapi-generator-cli generate -i ./openapi.yaml -g ruby -o ./generated/ruby/ -t ./templates/openapi-generator/ruby --git-repo-id=${GIT_REPO_ID} --git-user-id=${GIT_USER_ID} --release-note=${RELEASE_NOTE} --http-user-agent=${USER_AGENT} --additional-properties=gemVersion=${SDK_VERSION},gemAuthor=${GEM_AUTHOR},gemAuthorEmail=${GEM_AUTHOR_EMAIL},gemDescription=${GEM_DESCRIPTION},gemSummary=${GEM_DESCRIPTION},gemHomepage=${GEM_HOMEPAGE},gemLicense=${GEM_LICENSE},gemName=${GEM_NAME},gemSummary=${GEM_SUMMARY},moduleName=${MODULE_NAME},gemRequiredRubyVersion=${MINIMUM_VERSION}
+
+      - id: move-custom-files-to-repo
+        name: Move custom files to repo
+        run: |
+          mv ./backup/ruby/lib/fattureincloud_ruby_sdk/filter ./generated/ruby/lib/fattureincloud_ruby_sdk/
+          mv ./backup/ruby/lib/fattureincloud_ruby_sdk/oauth2 ./generated/ruby/lib/fattureincloud_ruby_sdk/
+
+      - id: generate-additional-files
+        name: Generate Additional files
+        run: |
+          node ./scripts/generate-scopes.js ruby
+
+      - id: lint-code
+        name: Lint Code Base
+        run: |
+          cd ./generated/ruby
+          bundle install
+          bundle exec rubocop -a
+
+      - id: create-pr
+        name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: ./generated/ruby
+          branch: "devel-${{ env.sdk_version }}"
+          token: "${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}"
+          delete-branch: true
+          base: master
+          commit-message: "chore: bumping version to ${{ env.sdk_version }}"
+          title: "Updating SDK to ${{ env.sdk_version }}"
+          body: "New SDK verson ${{ env.sdk_version }} generated by Github Action from OpenAPI Spec ${{ env.openapi_version }}"

@@ -1,0 +1,9 @@
+title: ListLanguagesResponse
+type: object
+description: ''
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../schemas/Language.yaml
+    nullable: true

@@ -1,0 +1,9 @@
+title: ListRevenueCentersResponse
+type: object
+description: ''
+properties:
+  data:
+    type: array
+    items:
+      type: string
+    nullable: true

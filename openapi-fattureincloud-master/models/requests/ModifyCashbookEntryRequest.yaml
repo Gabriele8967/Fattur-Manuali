@@ -1,0 +1,7 @@
+title: ModifyCashbookEntryRequest
+type: object
+description: ''
+properties:
+  data:
+    $ref: ../schemas/CashbookEntry.yaml
+    nullable: true

@@ -1,0 +1,7 @@
+title: GetCompanyInfoResponse
+description: ''
+type: object
+properties:
+  data:
+    $ref: ../schemas/CompanyInfo.yaml
+    nullable: true

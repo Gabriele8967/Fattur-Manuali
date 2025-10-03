@@ -1,0 +1,7 @@
+title: ModifyF24Response
+type: object
+properties:
+  data:
+    $ref: ../schemas/F24.yaml
+    nullable: true
+description: ''

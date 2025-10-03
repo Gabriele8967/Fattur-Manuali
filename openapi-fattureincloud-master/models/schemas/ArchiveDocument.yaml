@@ -1,0 +1,35 @@
+title: ArchiveDocument
+type: object
+properties:
+  id:
+    type: integer
+    description: Archive document id
+    nullable: true
+  date:
+    type: string
+    format: date
+    description: Archive document date
+    nullable: true
+  description:
+    type: string
+    description: Archive Document description
+    nullable: true
+  attachment_url:
+    type: string
+    description: |-
+      [Temporary] [Read Only]
+      Archive Document url of the attached file
+    nullable: true
+    readOnly: true
+  category:
+    type: string
+    description: Archive document category
+    nullable: true
+  attachment_token:
+    type: string
+    description: |-
+      [Write Only] 
+      [Required]
+      Archive document attachment token returned by POST /archive/attachment
+    nullable: true
+    writeOnly: true

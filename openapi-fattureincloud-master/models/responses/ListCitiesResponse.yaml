@@ -1,0 +1,9 @@
+title: ListCitiesResponse
+type: object
+description: ''
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../schemas/City.yaml
+    nullable: true

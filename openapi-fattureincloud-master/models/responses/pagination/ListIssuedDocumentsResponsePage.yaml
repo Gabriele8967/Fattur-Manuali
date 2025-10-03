@@ -1,0 +1,8 @@
+title: ListIssuedDocumentResponsePage
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../../schemas/IssuedDocument.yaml
+    nullable: true

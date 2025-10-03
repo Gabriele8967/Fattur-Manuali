@@ -1,0 +1,41 @@
+title: ReceivedDocumentItemsListItem
+type: object
+properties:
+  id:
+    type: integer
+    description: Received document item id
+    nullable: true
+  product_id:
+    type: integer
+    description: Received document product id
+    nullable: true
+  code:
+    type: string
+    description: Received document item product code
+    nullable: true
+  name:
+    type: string
+    description: Received document item product name
+    nullable: true
+  measure:
+    type: string
+    description: Received document item measure
+    nullable: true
+  net_price:
+    type: number
+    description: Received document item product net price
+    nullable: true
+  category:
+    type: string
+    description: Received document item product category
+    nullable: true
+  qty:
+    type: number
+    description: Received document item quantity
+    nullable: true
+  vat:
+    $ref: ./VatType.yaml
+  stock:
+    type: number
+    description: Received document item product number of items in stock
+    nullable: true

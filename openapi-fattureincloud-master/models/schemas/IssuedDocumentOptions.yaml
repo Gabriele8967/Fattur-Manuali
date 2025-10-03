@@ -1,0 +1,25 @@
+title: IssuedDocumentOptions
+type: object
+properties:
+  fix_payments:
+    type: boolean
+    description: Fixes your last payment amount to match your document total
+    nullable: true
+  create_from:
+    type: array
+    description: Original documents ids [only for join/transform]
+    nullable: true
+    items:
+      type: string
+  transform:
+    type: boolean
+    description: Tranform a document [only for transform]
+    nullable: true
+  keep_copy:
+    type: boolean
+    description: Keep original document [only for transform]
+    nullable: true
+  join_type:
+    type: string
+    description: Join type [only for join]
+    nullable: true

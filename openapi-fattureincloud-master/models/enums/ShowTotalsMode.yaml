@@ -1,0 +1,8 @@
+title: ShowTotalsMode
+type: string
+description: Show totals mode
+default: all
+enum:
+  - none
+  - nets
+  - all

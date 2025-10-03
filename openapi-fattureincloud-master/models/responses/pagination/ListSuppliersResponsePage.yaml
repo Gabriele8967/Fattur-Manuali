@@ -1,0 +1,8 @@
+title: ListSuppliersResponsePage
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../../schemas/Supplier.yaml
+    nullable: true

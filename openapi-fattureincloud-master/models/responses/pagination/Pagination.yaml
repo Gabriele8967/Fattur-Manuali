@@ -1,0 +1,53 @@
+title: Pagination
+type: object
+description: ''
+properties:
+  current_page:
+    type: integer
+    description: Current page number.
+    nullable: true
+  first_page_url:
+    type: string
+    format: uri
+    description: First page url.
+    nullable: true
+  from:
+    type: integer
+    nullable: true
+    description: First result of the page.
+  last_page:
+    type: integer
+    description: Last page number.
+    nullable: true
+  last_page_url:
+    type: string
+    format: uri
+    description: Last page url.
+    nullable: true
+  next_page_url:
+    type: string
+    format: uri
+    nullable: true
+    description: Next page url
+  path:
+    type: string
+    format: uri
+    description: Request path.
+    nullable: true
+  per_page:
+    type: integer
+    description: Number of result per page.
+    nullable: true
+  prev_page_url:
+    type: string
+    format: uri
+    nullable: true
+    description: Previous page url.
+  to:
+    type: integer
+    nullable: true
+    description: Last result of the page.
+  total:
+    type: integer
+    description: Total number of results
+    nullable: true

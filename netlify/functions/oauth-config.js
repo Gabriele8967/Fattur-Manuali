@@ -3,8 +3,8 @@ exports.handler = async (event, context) => {
     try {
         const requiredEnvVars = [
             'FIC_CLIENT_ID',
-            'FIC_COMPANY_ID', 
-            'FATTURE_REDIRECT_URI'
+            'FIC_COMPANY_ID',
+            'FIC_REDIRECT_URI'
         ];
 
         const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
@@ -23,9 +23,9 @@ exports.handler = async (event, context) => {
         }
 
         const config = {
-            clientId: process.env.FATTURE_CLIENT_ID,
-            companyId: process.env.FATTURE_COMPANY_ID,
-            redirectUri: process.env.FATTURE_REDIRECT_URI,
+            clientId: process.env.FIC_CLIENT_ID,
+            companyId: process.env.FIC_COMPANY_ID,
+            redirectUri: process.env.FIC_REDIRECT_URI,
             authEndpoint: 'https://api-v2.fattureincloud.it/oauth/authorize',
             tokenEndpoint: 'https://api-v2.fattureincloud.it/oauth/token',
             // SCOPE CORRETTO per Fatture in Cloud

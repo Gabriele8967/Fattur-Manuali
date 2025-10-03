@@ -1,0 +1,17 @@
+type: object
+title: DocumentTemplate
+properties:
+  id:
+    type: integer
+    description: Template id
+    example: 123
+    nullable: true
+  name:
+    type: string
+    example: Light Smoke
+    nullable: true
+    description: Template name
+  type:
+    type: string
+    description: Template type
+    nullable: true

@@ -1,0 +1,159 @@
+name: Generate C# SDK
+on:
+  repository_dispatch:
+    types: [generate-csharp]
+
+jobs:
+  generate-csharp-sdk:
+    runs-on: ubuntu-latest
+    env:
+      GIT_REPO_ID: fattureincloud-csharp-sdk
+      GIT_USER_ID: fattureincloud
+    steps:
+      - id: checkout
+        name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}
+
+      - id: checkout-csharp
+        name: Checkout C# repo
+        env:
+          GIT_REPO_PATH: "${{ env.GIT_USER_ID }}/${{ env.GIT_REPO_ID }}"
+        uses: actions/checkout@v4
+        with:
+          path: ./generated/csharp
+          ref: master
+          repository: ${{ env.GIT_REPO_PATH }}
+          token: ${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}
+
+      - id: init-git
+        name: Init GIT
+        run: |
+          git config --global user.email "info@fattureincloud.it"
+          git config --global user.name "fattureincloud-bot"
+
+      - id: setup-node
+        name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - id: setup-java
+        name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "adopt"
+          java-version: "11"
+
+      - id: setup-dotnet
+        if: ${{ !env.ACT }}
+        name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"
+
+      - id: setup-libraries
+        name: Install libraries
+        run: |
+          npm install -g yarn
+          yarn global add @apidevtools/swagger-cli @openapitools/openapi-generator-cli standard-version
+          sudo apt update
+          sudo apt upgrade
+          sudo wget -qO /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+          sudo chmod +x /usr/local/bin/yq
+          cd ./scripts/
+          yarn
+          cd ../generated/csharp/scripts
+          yarn
+          sudo apt-get install libssl-dev
+
+      - id: bump-csharp-sdk-version
+        name: Bump C# SDK
+        env:
+          OPENAPI_VERSION: ${{ github.event.client_payload.version }}
+        run: |
+
+          echo "openapi_version=$OPENAPI_VERSION"
+
+          BUMP_TYPE=$(node ./scripts/sdk-version-checker.js ./generated/csharp/sdk-version.yaml $OPENAPI_VERSION)
+
+          cd ./generated/csharp
+
+          if [ "$BUMP_TYPE" == "patch" ];then
+            echo 'Bumping the SDK patch version...'
+            standard-version --skip.tag --skip.changelog --skip.commit --release-as patch
+          elif [ "$BUMP_TYPE" == "openapi" ];then
+            echo 'Using the openapi version...'
+            standard-version --skip.tag --skip.changelog --skip.commit --release-as $OPENAPI_VERSION
+          else
+            echo "Something bad happened - impossible to bump C# SDK version. value=$BUMP_TYPE"
+          fi
+
+          SDK_VERSION=$(yq e '.info.version' ./sdk-version.yaml)
+
+
+          echo "sdk_version=$SDK_VERSION" >> $GITHUB_ENV
+          echo "openapi_version=$OPENAPI_VERSION" >> $GITHUB_ENV
+
+      - id: move-custom-files-to-backup
+        name: Move custom files to backup
+        run: |
+          mkdir -p ./backup/csharp/src/It.FattureInCloud.Sdk/Filter
+          mkdir -p ./backup/csharp/src/It.FattureInCloud.Sdk/Oauth2
+          mv ./generated/csharp/src/It.FattureInCloud.Sdk/Filter ./backup/csharp/src/It.FattureInCloud.Sdk/
+          mv ./generated/csharp/src/It.FattureInCloud.Sdk/Oauth2 ./backup/csharp/src/It.FattureInCloud.Sdk/
+
+      - id: delete-old-files
+        name: Delete old files
+        run: |
+          rm -rf ./generated/csharp/src/It.FattureInCloud.Sdk
+          rm -rf ./generated/csharp/docs
+
+      - id: generate-csharp-sdk
+        name: Generate C# SDK
+        env:
+          PACKAGE_NAME: It.FattureInCloud.Sdk
+          PACKAGE_TITLE: "\"Fatture in Cloud C# SDK\""
+          PACKAGE_AUTHORS: "\"Fatture in Cloud API Team\""
+          PACKAGE_COMPANY: "\"Fatture in Cloud\""
+          TARGET_FRAMEWORK: "\"netstandard2.0\""
+          TEST_TARGET_FRAMEWORK: "\"net6.0\""
+          APP_NAME: "FattureInCloud"
+        run: |
+          SDK_VERSION=${{ env.sdk_version }}
+          echo "${{ env.sdk_version }}"
+
+          RELEASE_NOTE="\"bumping version to $SDK_VERSION\""
+
+          USER_AGENT="$APP_NAME/${{ env.sdk_version }}/csharp-SDK"
+
+          openapi-generator-cli generate -i ./openapi.yaml -g csharp -o generated/csharp/ -t ./templates/openapi-generator/csharp --additional-properties=useDateTimeOffset=true,conditionalSerialization=true,packageName=${PACKAGE_NAME},packageAuthors=${PACKAGE_AUTHORS},packageCompany=${PACKAGE_COMPANY},packageTitle=${PACKAGE_TITLE},packageVersion=${SDK_VERSION},targetFramework=${TARGET_FRAMEWORK},testTargetFramework=${TEST_TARGET_FRAMEWORK},multiTarget=true,equatable=true,licenseId=MIT --git-repo-id=${GIT_REPO_ID} --git-user-id=${GIT_USER_ID} --release-note=${RELEASE_NOTE} --http-user-agent=${USER_AGENT}
+
+      - id: move-custom-files-to-repo
+        name: Move custom files to repo
+        run: |
+          mv ./backup/csharp/src/It.FattureInCloud.Sdk/Filter ./generated/csharp/src/It.FattureInCloud.Sdk/
+          mv ./backup/csharp/src/It.FattureInCloud.Sdk/Oauth2 ./generated/csharp/src/It.FattureInCloud.Sdk/
+
+      - id: generate-additional-files
+        name: Generate Additional files
+        run: |
+          node ./scripts/generate-scopes.js csharp
+
+      - id: lint-code
+        name: Lint Code Base
+        run: |
+          cd ./generated/csharp
+          dotnet format
+
+      - id: create-pr
+        name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: ./generated/csharp
+          branch: "devel-${{ env.sdk_version }}"
+          token: "${{ secrets.FATTUREINCLOUD_BOT_TOKEN }}"
+          delete-branch: true
+          base: master
+          commit-message: "chore: bumping version to ${{ env.sdk_version }}"
+          title: "Updating SDK to ${{ env.sdk_version }}"
+          body: "New SDK verson ${{ env.sdk_version }} generated by Github Action from OpenAPI Spec ${{ env.openapi_version }}"

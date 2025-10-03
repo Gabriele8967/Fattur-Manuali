@@ -1,0 +1,9 @@
+title: ListCashbookEntriesResponse
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../schemas/CashbookEntry.yaml
+    nullable: true
+description: ''

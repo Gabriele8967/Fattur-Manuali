@@ -1,0 +1,31 @@
+type: object
+nullable: true
+title: PaymentAccount
+properties:
+  id:
+    type: integer
+    description: Payment account id
+    nullable: true
+  name:
+    type: string
+    description: Payment account name
+    example: Conto Banca Intesa
+    nullable: true
+  type:
+    $ref: ../enums/PaymentAccountType.yaml
+  iban:
+    type: string
+    nullable: true
+    description: Payment account iban
+  sia:
+    type: string
+    nullable: true
+    description: Payment account sia
+  cuc:
+    type: string
+    description: Payment account cuc
+    nullable: true
+  virtual:
+    type: boolean
+    description: Payment method is virtual
+    nullable: true

@@ -56,7 +56,7 @@ exports.handler = async (event) => {
 
         const data = JSON.parse(event.body);
 
-        // 1. Costruisci i dati della fattura
+        // 1. Costruisci i dati della fattura usando la struttura corretta OpenAPI
         const invoicePayload = {
             data: {
                 type: 'invoice',
@@ -71,10 +71,20 @@ exports.handler = async (event) => {
                     {
                         name: data.causale,
                         qty: 1,
-                        net_price: data.importo,
-                        vat: { id: 0 }, // Esente IVA
+                        net_price: parseFloat(data.importo),
+                        vat: {
+                            id: 0,
+                            value: 0,
+                            description: 'Esente IVA'
+                        },
                     },
                 ],
+                payment_method: {
+                    name: 'Contanti',
+                    default_payment_account: {
+                        name: 'Cassa'
+                    }
+                },
             },
         };
 

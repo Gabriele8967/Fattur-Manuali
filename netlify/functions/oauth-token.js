@@ -1,168 +1,88 @@
 const https = require('https');
-
+const { URLSearchParams } = require('url');
 const { updateNetlifyEnvVars } = require('./helpers/netlify-api');
 
-exports.handler = async (event, context) => {
-    // Solo POST requests
-    if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            body: JSON.stringify({ error: 'Method not allowed' })
-        };
+exports.handler = async (event) => {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    };
+
+    if (event.httpMethod === 'OPTIONS') {
+        return { statusCode: 200, headers };
+    }
+
+    let code;
+    try {
+        const body = JSON.parse(event.body);
+        code = body.code;
+        if (!code) {
+            throw new Error('Authorization code is missing.');
+        }
+    } catch (error) {
+        return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid request: ' + error.message }) };
     }
 
     try {
-        const { code, state } = JSON.parse(event.body);
+        const { FIC_CLIENT_ID, FIC_CLIENT_SECRET, FIC_REDIRECT_URI } = process.env;
 
-        if (!code) {
-            return {
-                statusCode: 400,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: JSON.stringify({ error: 'Authorization code is required' })
-            };
-        }
+        const postData = new URLSearchParams({
+            grant_type: 'authorization_code',
+            client_id: FIC_CLIENT_ID,
+            client_secret: FIC_CLIENT_SECRET,
+            redirect_uri: FIC_REDIRECT_URI,
+            code: code,
+        }).toString();
 
-        // Verifica che tutte le variabili d'ambiente siano configurate
-        const requiredEnvVars = [
-            'FATTURE_CLIENT_ID',
-            'FATTURE_CLIENT_SECRET',
-            'FATTURE_COMPANY_ID',
-            'FATTURE_REDIRECT_URI'
-        ];
-
-        const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-        
-        if (missingVars.length > 0) {
-            console.error('Missing environment variables:', missingVars);
-            return {
-                statusCode: 500,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: JSON.stringify({
-                    error: `Server configuration error`
-                })
-            };
-        }
-
-        // Scambia il codice per il token
-        const tokenData = await exchangeCodeForToken(code, state);
-
-        // Restituisci le credenziali
-        const credentials = {
-            accessToken: tokenData.access_token,
-            refreshToken: tokenData.refresh_token,
-            expiresAt: Date.now() + (tokenData.expires_in * 1000),
-            companyId: process.env.FATTURE_COMPANY_ID,
-            method: 'oauth',
-            timestamp: new Date().toISOString()
-        };
-
-        console.log('OAuth token exchange successful for company:', process.env.FATTURE_COMPANY_ID);
-        console.log('--- TO BE SET AS NETLIFY ENVIRONMENT VARIABLE ---');
-        console.log('FATTURE_MASTER_REFRESH_TOKEN:', tokenData.refresh_token);
-        console.log('--------------------------------------------------');
-        console.log('Initial Access Token:', tokenData.access_token);
-        console.log('Expires At:', Date.now() + (tokenData.expires_in * 1000));
-
-        return {
-            statusCode: 200,
+        const options = {
+            hostname: 'api-v2.fattureincloud.it',
+            path: '/oauth/token',
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-cache'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': postData.length,
             },
-            body: JSON.stringify(tokenData)
         };
 
-    } catch (error) {
-        // Update Netlify environment variables with the new tokens
+        // 1. Exchange authorization code for tokens
+        const tokenData = await new Promise((resolve, reject) => {
+            const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', (chunk) => (data += chunk));
+                res.on('end', () => {
+                    if (res.statusCode >= 200 && res.statusCode < 300) {
+                        resolve(JSON.parse(data));
+                    } else {
+                        reject(new Error(`Fatture in Cloud API error. Status: ${res.statusCode}, Body: ${data}`));
+                    }
+                });
+            });
+            req.on('error', reject);
+            req.write(postData);
+            req.end();
+        });
+
+        // 2. Save the new tokens to Netlify environment variables
         await updateNetlifyEnvVars({
             FIC_ACCESS_TOKEN: tokenData.access_token,
             FIC_REFRESH_TOKEN: tokenData.refresh_token,
         });
 
+        // 3. Return a success response
         return {
             statusCode: 200,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            body: JSON.stringify(tokenData)
+            headers,
+            body: JSON.stringify({ message: 'Authentication successful. Tokens saved.' }),
         };
 
     } catch (error) {
-        console.error('OAuth token exchange error:', error);
-        
+        console.error('OAuth token exchange failed:', error);
         return {
             statusCode: 500,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            body: JSON.stringify({
-                error: error.message || 'Token exchange failed'
-            })
+            headers,
+            body: JSON.stringify({ error: 'Internal Server Error: ' + error.message }),
         };
     }
 };
-
-async function exchangeCodeForToken(code, state) {
-    return new Promise((resolve, reject) => {
-        const postData = JSON.stringify({
-            grant_type: 'authorization_code',
-            client_id: process.env.FATTURE_CLIENT_ID,
-            client_secret: process.env.FATTURE_CLIENT_SECRET,
-            redirect_uri: process.env.FATTURE_REDIRECT_URI,
-            code: code
-        });
-
-        const options = {
-            hostname: 'api-v2.fattureincloud.it',
-            port: 443,
-            path: '/oauth/token',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(postData)
-            }
-        };
-
-        const req = https.request(options, (res) => {
-            let data = '';
-            
-            res.on('data', (chunk) => {
-                data += chunk;
-            });
-            
-            res.on('end', () => {
-                if (res.statusCode === 200) {
-                    try {
-                        const tokenData = JSON.parse(data);
-                        resolve(tokenData);
-                    } catch (error) {
-                        reject(new Error('Failed to parse token response: ' + data));
-                    }
-                } else {
-                    reject(new Error(`Token exchange failed: ${res.statusCode} - ${data}`));
-                }
-            });
-        });
-
-        req.on('error', (error) => {
-            reject(error);
-        });
-
-        req.write(postData);
-        req.end();
-    });
-}

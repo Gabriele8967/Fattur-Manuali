@@ -1,6 +1,5 @@
 const https = require('https');
 const { URLSearchParams } = require('url');
-const { updateNetlifyEnvVars } = require('./helpers/netlify-api');
 
 exports.handler = async (event) => {
     const headers = {
@@ -64,17 +63,17 @@ exports.handler = async (event) => {
             req.end();
         });
 
-        // 2. Save the new tokens to Netlify environment variables
-        await updateNetlifyEnvVars({
-            FIC_ACCESS_TOKEN: tokenData.access_token,
-            FIC_REFRESH_TOKEN: tokenData.refresh_token,
-        });
-
-        // 3. Return a success response
+        // 2. Return tokens to client for storage in localStorage
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify({ message: 'Authentication successful. Tokens saved.' }),
+            body: JSON.stringify({
+                message: 'Authentication successful',
+                accessToken: tokenData.access_token,
+                refreshToken: tokenData.refresh_token,
+                companyId: process.env.FIC_COMPANY_ID,
+                timestamp: new Date().toISOString()
+            }),
         };
 
     } catch (error) {

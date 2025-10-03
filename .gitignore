@@ -1,2 +1,3 @@
 netlify-env.json
-*.js
+/get-site-id.js
+/set-env-vars*.js

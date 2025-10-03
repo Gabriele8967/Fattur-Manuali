@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup - Fatture in Cloud</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Configurazione Sistema Fatture</h1>
+            <p>Segui i passaggi per configurare il token API permanente</p>
+        </header>
+
+        <div class="section" style="background: #e8f4fd; border-left: 4px solid #2196F3;">
+            <h2>✨ Token Permanente - Approccio Semplice</h2>
+            <p><strong>Niente OAuth, niente complicazioni!</strong> Usa un token permanente che non scade mai.</p>
+        </div>
+
+        <div class="section">
+            <h2>📝 Passo 1: Genera il Token Manuale</h2>
+            <ol>
+                <li>Vai su <a href="https://secure.fattureincloud.it" target="_blank">Fatture in Cloud</a></li>
+                <li>Accedi al tuo account</li>
+                <li>Vai su <strong>Impostazioni → API → Token Manuale</strong></li>
+                <li>Clicca su <strong>"Genera nuovo token"</strong></li>
+                <li>Seleziona gli scope:
+                    <ul>
+                        <li><code>issued_documents.invoices:a</code> (Creazione fatture)</li>
+                        <li><code>entity.clients:r</code> (Lettura clienti)</li>
+                    </ul>
+                </li>
+                <li>Copia il token generato</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Passo 2: Configura su Netlify</h2>
+            <ol>
+                <li>Vai su <a href="https://app.netlify.com/sites/fatture-manuali/configuration/env" target="_blank">Netlify Environment Variables</a></li>
+                <li>Aggiungi questa variabile:
+                    <div style="background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 4px; font-family: monospace;">
+                        <strong>Key:</strong> FIC_ACCESS_TOKEN<br>
+                        <strong>Value:</strong> [Il token copiato al passo 1]
+                    </div>
+                </li>
+                <li>Clicca <strong>"Save"</strong></li>
+                <li>Netlify farà automaticamente il redeploy</li>
+            </ol>
+        </div>
+
+        <div class="section" style="background: #f0f8f0; border-left: 4px solid #4caf50;">
+            <h2>✅ Passo 3: Verifica</h2>
+            <p>Dopo il deploy (2-3 minuti), prova a creare una fattura dalla <a href="/">pagina principale</a>.</p>
+            <p><strong>Il token non scade mai</strong> - configurazione una tantum!</p>
+        </div>
+
+        <div class="section" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+            <h3>⚠️ Importante</h3>
+            <ul>
+                <li>Conserva il token in modo sicuro</li>
+                <li>Non condividerlo pubblicamente</li>
+                <li>Puoi revocarlo in qualsiasi momento dal pannello Fatture in Cloud</li>
+            </ul>
+        </div>
+
+        <div class="form-actions">
+            <a href="/" class="btn btn-primary">🏠 Torna alla Home</a>
+            <a href="https://developers.fattureincloud.it/docs/authentication/manual-authentication/" target="_blank" class="btn btn-secondary">📖 Documentazione</a>
+        </div>
+    </div>
+</body>
+</html>

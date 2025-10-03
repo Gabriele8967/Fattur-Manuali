@@ -25,47 +25,7 @@ function callFattureInCloudAPI(options, postData) {
     });
 }
 
-// Funzione per aggiornare il token
-const { URLSearchParams } = require('url');
-
-async function refreshAccessToken(currentRefreshToken) {
-    const postData = new URLSearchParams({
-        grant_type: 'refresh_token',
-        client_id: process.env.FIC_CLIENT_ID,
-        client_secret: process.env.FIC_CLIENT_SECRET,
-        refresh_token: currentRefreshToken,
-    }).toString();
-
-    const options = {
-        hostname: 'api-v2.fattureincloud.it',
-        path: '/oauth/token',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': postData.length,
-        },
-    };
-
-    const tokenData = await callFattureInCloudAPI(options, postData);
-
-    console.log('Tokens refreshed, saving to Netlify Blobs...');
-
-    // Salva i nuovi token in Netlify Blobs
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore('fic-tokens');
-
-    await store.setJSON('oauth-tokens', {
-        accessToken: tokenData.access_token,
-        refreshToken: tokenData.refresh_token,
-        timestamp: new Date().toISOString()
-    });
-
-    console.log('Tokens updated successfully in Netlify Blobs');
-
-    return tokenData.access_token;
-}
-
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
     const headers = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
@@ -82,21 +42,19 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        // Get tokens from Netlify Blobs
-        const { getStore } = await import('@netlify/blobs');
-        const store = getStore('fic-tokens');
-        const tokens = await store.getJSON('oauth-tokens');
+        // Use permanent API token from environment variables
+        const accessToken = process.env.FIC_ACCESS_TOKEN;
+        const companyId = process.env.FIC_COMPANY_ID;
 
-        if (!tokens || !tokens.accessToken) {
+        if (!accessToken || !companyId) {
             return {
                 statusCode: 401,
                 headers,
-                body: JSON.stringify({ error: 'OAuth tokens not configured. Please authorize the system first.' }),
+                body: JSON.stringify({ error: 'API token not configured. Please set FIC_ACCESS_TOKEN environment variable.' }),
             };
         }
 
         const data = JSON.parse(event.body);
-        const companyId = process.env.FIC_COMPANY_ID;
 
         // 1. Costruisci i dati della fattura
         const invoicePayload = {
@@ -129,42 +87,25 @@ exports.handler = async (event, context) => {
 
         const postData = JSON.stringify(invoicePayload);
 
-        const createInvoice = async (token) => {
-            const options = {
-                hostname: 'api-v2.fattureincloud.it',
-                path: `/c/${companyId}/issued_documents`,
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Length': postData.length,
-                },
-            };
-            return await callFattureInCloudAPI(options, postData);
+        // Create invoice with permanent token
+        const options = {
+            hostname: 'api-v2.fattureincloud.it',
+            path: `/c/${companyId}/issued_documents`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Length': postData.length,
+            },
         };
 
-        try {
-            // Prova a creare la fattura con il token attuale
-            const result = await createInvoice(tokens.accessToken);
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ invoiceNumber: result.data.number }),
-            };
-        } catch (error) {
-            // Se il token è scaduto (401), aggiornalo e riprova
-            if (error.statusCode === 401) {
-                console.log('Access token expired. Refreshing...');
-                const newAccessToken = await refreshAccessToken(tokens.refreshToken);
-                const result = await createInvoice(newAccessToken);
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ invoiceNumber: result.data.number }),
-                };
-            }
-            throw error; // Altri errori
-        }
+        const result = await callFattureInCloudAPI(options, postData);
+
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ invoiceNumber: result.data.number }),
+        };
 
     } catch (error) {
         console.error('Handler error:', error);

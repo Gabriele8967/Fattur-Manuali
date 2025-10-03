@@ -76,9 +76,7 @@ exports.handler = async (event) => {
                         qty: 1,
                         net_price: importo,
                         vat: {
-                            id: 0,
-                            value: 0,
-                            description: 'Esente IVA'
+                            value: 0
                         },
                     },
                 ],

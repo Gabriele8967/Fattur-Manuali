@@ -64,7 +64,7 @@ exports.handler = async (event) => {
                     name: `${data.nome} ${data.cognome}`,
                     tax_code: data.codiceFiscale,
                     email: data.email,
-                    country: 'IT',
+                    country: 'Italia',
                 },
                 date: new Date().toISOString().split('T')[0],
                 items_list: [

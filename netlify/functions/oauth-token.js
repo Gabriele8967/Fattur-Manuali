@@ -1,5 +1,7 @@
 const https = require('https');
 
+const { updateNetlifyEnvVars } = require('./helpers/netlify-api');
+
 exports.handler = async (event, context) => {
     // Solo POST requests
     if (event.httpMethod !== 'POST') {
@@ -78,7 +80,23 @@ exports.handler = async (event, context) => {
                 'Access-Control-Allow-Origin': '*',
                 'Cache-Control': 'no-cache'
             },
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(tokenData)
+        };
+
+    } catch (error) {
+        // Update Netlify environment variables with the new tokens
+        await updateNetlifyEnvVars({
+            FIC_ACCESS_TOKEN: tokenData.access_token,
+            FIC_REFRESH_TOKEN: tokenData.refresh_token,
+        });
+
+        return {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify(tokenData)
         };
 
     } catch (error) {
